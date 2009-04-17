@@ -64,6 +64,30 @@ public final class CreateLauncherMojo extends AbstractMojo {
      */
     private String libraryDirectory;
     
+    // Mac OS X Specific parameters -------------------------------
+    
+    /**
+     * Any file type that is associated with this application.
+     * This is registered in the Mac OS X Info.plist.
+     * 
+     * @parameter expression="${xplp.filetype}"
+     */
+    private String fileType;
+    
+    /**
+     * The name of the icons file.
+     * 
+     * @parameter expression="${xplp.iconsfilename}"
+     */
+    private String iconsFileName;
+    
+    /**
+     * The bundle signature.
+     * 
+     * @parameter expression="${xplp.bundlesignature}"
+     */
+    private String bundleSignature;
+    
     /**
      * {@inheritDoc}
      */
