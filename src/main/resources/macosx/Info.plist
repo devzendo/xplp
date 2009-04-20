@@ -6,7 +6,7 @@
         <dict>
             <key>CFBundleTypeOSTypes</key>
             <array>
-                <string>${xplp.filetype}</string>
+                <string>${xplp.bundleostype}</string>
             </array>
             <key>CFBundleTypeName</key>
             <string>Mindmap</string>

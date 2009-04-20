@@ -1,6 +1,7 @@
 package uk.me.gumbley.xplp;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -23,7 +24,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * The OS to generate a launcher for: Windows, MacOSX or Linux.
      * 
      * @required
-     * @parameter expression="${xplp.os}" default-value="none" 
+     * @parameter expression="${xplp.os}"
      * 
      */
     private String os;
@@ -32,7 +33,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * The directory into which the output files will be placed.
      * By default, this is the target directory.
      * 
-     * @parameter expression=${project.build.directory}
+     * @parameter expression="${project.build.directory}"
      */
     private File outputDirectory;
     
@@ -41,7 +42,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * i.e. contains a public static void main...
      * 
      * @required
-     * @parameter expression="${xplp.mainclassname}
+     * @parameter expression="${xplp.mainclassname}"
      */
     private String mainClassName;
 
@@ -60,7 +61,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * The directory where the application's jars are.
      * By default, assume lib/
      * 
-     * @parameter expression="${xplp.librarydirectory} default-value="lib"
+     * @parameter expression="${xplp.librarydirectory}" default-value="lib"
      */
     private String libraryDirectory;
     
@@ -89,6 +90,13 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String bundleSignature;
     
     /**
+     * The bundle OS type.
+     * 
+     * @parameter expression="${xplp.bundleostype}"
+     */
+    private String bundleOsType;
+    
+    /**
      * {@inheritDoc}
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -102,5 +110,24 @@ public final class CreateLauncherMojo extends AbstractMojo {
         getLog().info("Application name:  " + applicationName);
         getLog().info("Library directory: " + libraryDirectory);
         
+        LauncherCreator launcherCreator;
+        if (os.equals("MacOSX")) {
+            launcherCreator = new MacOSXLauncherCreator(outputDirectory,
+                mainClassName, applicationName, libraryDirectory,
+                fileType, iconsFileName, bundleSignature,bundleOsType);
+        } else if (os.equals("Windows")) {
+            launcherCreator = new WindowsLauncherCreator(outputDirectory,
+                mainClassName, applicationName, libraryDirectory);
+        } else if (os.equals("Linux")) {
+            launcherCreator = new LinuxLauncherCreator(outputDirectory,
+                mainClassName, applicationName, libraryDirectory);
+        } else {
+            throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
+        }
+        try {
+            launcherCreator.createLauncher();
+        } catch (final IOException e) {
+            throw new MojoFailureException(("Could not create launcher: " + e.getMessage()));
+        }
     }
 }
