@@ -1,11 +1,20 @@
 package uk.me.gumbley.xplp;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 
 /**
  * A Maven plugin that creates launchers for Windows
@@ -18,6 +27,22 @@ import org.apache.maven.plugin.MojoFailureException;
  *
  */
 public final class CreateLauncherMojo extends AbstractMojo {
+
+    /**
+     * The Maven project.
+     * @parameter expression="${project}"
+     */ 
+    private org.apache.maven.project.MavenProject mavenProject; 
+    /** @component */ 
+    private org.apache.maven.artifact.factory.ArtifactFactory artifactFactory; 
+    /** @component */ 
+    private org.apache.maven.artifact.resolver.ArtifactResolver artifactResolver; 
+    /** @parameter expression="${localRepository}"  */ 
+    private org.apache.maven.artifact.repository.ArtifactRepository localRepository; 
+    /** @parameter expression="${project.remoteArtifactRepositories}"  */ 
+    private java.util.List<?> remoteRepositories; 
+    /** @component */ 
+    private ArtifactMetadataSource artifactMetadataSource;
 
     
     /**
@@ -97,6 +122,13 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String bundleOsType;
     
     /**
+     * The bundle type name
+     * 
+     * @parameter expression="${xplp.bundletypename}"
+     */
+    private String bundleTypeName;
+    
+    /**
      * {@inheritDoc}
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -109,25 +141,91 @@ public final class CreateLauncherMojo extends AbstractMojo {
         getLog().info("Main class name:   " + mainClassName);
         getLog().info("Application name:  " + applicationName);
         getLog().info("Library directory: " + libraryDirectory);
+        final Set<Artifact> transitiveArtifacts = getTransitiveDependencies();
+        final Set<File> resourceDirectories = getResourceDirectories();
+        final Properties parameterProperties = getParameterProperties();
         
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
-            launcherCreator = new MacOSXLauncherCreator(outputDirectory,
-                mainClassName, applicationName, libraryDirectory,
-                fileType, iconsFileName, bundleSignature,bundleOsType);
+            launcherCreator = new MacOSXLauncherCreator(this,
+                outputDirectory, mainClassName, applicationName,
+                libraryDirectory, transitiveArtifacts, resourceDirectories,
+                fileType, iconsFileName, bundleSignature,
+                bundleOsType, bundleTypeName);
         } else if (os.equals("Windows")) {
-            launcherCreator = new WindowsLauncherCreator(outputDirectory,
-                mainClassName, applicationName, libraryDirectory);
+            launcherCreator = new WindowsLauncherCreator(this,
+                outputDirectory, mainClassName, applicationName,
+                libraryDirectory, transitiveArtifacts, resourceDirectories);
         } else if (os.equals("Linux")) {
-            launcherCreator = new LinuxLauncherCreator(outputDirectory,
-                mainClassName, applicationName, libraryDirectory);
+            launcherCreator = new LinuxLauncherCreator(this,
+                outputDirectory, mainClassName, applicationName,
+                libraryDirectory, transitiveArtifacts, resourceDirectories);
         } else {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }
         try {
             launcherCreator.createLauncher();
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             throw new MojoFailureException(("Could not create launcher: " + e.getMessage()));
         }
+    }
+    
+    private Properties getParameterProperties() {
+        final Properties properties = new Properties();
+        this.getClass().getAnnotation(arg0)
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Set<File> getResourceDirectories() {
+        final HashSet<File> resourceDirs = new HashSet<File>();
+        final List<Resource> resources = mavenProject.getResources();
+        for (Resource resource : resources) {
+            final String directory = resource.getDirectory();
+            final File directoryFile = new File(directory);
+            if (directoryFile.exists() && directoryFile.isDirectory()) {
+                resourceDirs.add(directoryFile);
+            }
+        }
+        return resourceDirs;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Set<Artifact> getTransitiveDependencies() throws MojoFailureException {
+        getLog().info("Resolving transitive dependencies");
+        Set<?> artifacts;
+        try {
+            artifacts = mavenProject.createArtifacts(artifactFactory, null, null);
+            
+//          For unknown reasons, this fails to filter - nothing's returned                
+//            final TypeArtifactFilter typeFilter = new TypeArtifactFilter("jar");
+//            final ScopeArtifactFilter scopeFilter = new ScopeArtifactFilter("compile");
+//            final AndArtifactFilter filter = new AndArtifactFilter();
+//            filter.add(typeFilter);
+//            filter.add(scopeFilter);
+            
+            final Set<Artifact> result = artifactResolver.resolveTransitively(artifacts,
+                mavenProject.getArtifact(), localRepository, remoteRepositories,
+                artifactMetadataSource, null).getArtifacts(); 
+            for (Artifact artifact : result) {
+                getLog().debug("Transitive artifact: " + artifact.toString());
+                getLog().debug("   File: " + artifact.getFile().getAbsolutePath());
+            }
+            getLog().info("Transitive dependencies resolved");
+            return result;
+        } catch (final InvalidDependencyVersionException e) {
+            final String message = "Invalid dependency version: " + e.getMessage();
+            getLog().warn(message);
+            throw new MojoFailureException(message);
+        } catch (final ArtifactResolutionException e) {
+            final String message = "Artifact failed to resolve: " + e.getMessage();
+            getLog().warn(message);
+            throw new MojoFailureException(message);
+        } catch (final ArtifactNotFoundException e) {
+            final String message = "Artifact not found: " + e.getMessage();
+            getLog().warn(message);
+            throw new MojoFailureException(message);
+        } 
     }
 }
