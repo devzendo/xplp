@@ -150,31 +150,61 @@ public final class CreateLauncherMojo extends AbstractMojo {
             launcherCreator = new MacOSXLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts, resourceDirectories,
-                fileType, iconsFileName, bundleSignature,
-                bundleOsType, bundleTypeName);
+                parameterProperties, fileType, iconsFileName,
+                bundleSignature, bundleOsType, bundleTypeName);
         } else if (os.equals("Windows")) {
             launcherCreator = new WindowsLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
-                libraryDirectory, transitiveArtifacts, resourceDirectories);
+                libraryDirectory, transitiveArtifacts,
+                resourceDirectories, parameterProperties);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
-                libraryDirectory, transitiveArtifacts, resourceDirectories);
+                libraryDirectory, transitiveArtifacts,
+                resourceDirectories, parameterProperties);
         } else {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }
         try {
             launcherCreator.createLauncher();
         } catch (final Exception e) {
-            throw new MojoFailureException(("Could not create launcher: " + e.getMessage()));
+            final StackTraceElement[] stackTrace = e.getStackTrace();
+            for (StackTraceElement stackTraceElement : stackTrace) {
+                getLog().info(stackTraceElement.toString());
+            }
+            throw new MojoFailureException("Could not create launcher: " + e.getMessage());
         }
     }
     
     private Properties getParameterProperties() {
+        getLog().info("maven properties");
+        final Properties mavenProperties = mavenProject.getProperties();
+        for (Object key : mavenProperties.keySet()) {
+            getLog().info("key" + key + " class " + key.getClass().getName());
+            final Object value = mavenProperties.get(key);
+            getLog().info("value" + value + " class " + (value == null ? "null" : value.getClass().getName()));
+        }
+        
         final Properties properties = new Properties();
-        this.getClass().getAnnotation(arg0)
-        // TODO Auto-generated method stub
-        return null;
+        // TODO there has to be an automated way of doing this!
+        // mavenProject.getProperties() ?
+        properties.put("xplp.os", nullToEmptyString(os));
+        properties.put("xplp.outputdirectory", nullToEmptyString(outputDirectory.getPath()));
+        properties.put("xplp.mainclassname", nullToEmptyString(mainClassName));
+        properties.put("xplp.applicationname", nullToEmptyString(applicationName));
+        properties.put("xplp.librarydirectory", nullToEmptyString(libraryDirectory));
+        properties.put("xplp.filetype", nullToEmptyString(fileType));
+        properties.put("xplp.iconsfilename", nullToEmptyString(iconsFileName));
+        properties.put("xplp.bundlesignature", nullToEmptyString(bundleSignature));
+        properties.put("xplp.bundleostype", nullToEmptyString(bundleOsType));
+        properties.put("xplp.bundletypename", nullToEmptyString(bundleTypeName));
+        properties.put("project.version", nullToEmptyString(mavenProject.getVersion()));
+        properties.put("project.description", nullToEmptyString(mavenProject.getDescription()));
+        return properties;
+    }
+
+    private String nullToEmptyString(final String in) {
+        return in == null ? "" : in;
     }
 
     @SuppressWarnings("unchecked")

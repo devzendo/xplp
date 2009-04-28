@@ -3,13 +3,17 @@
  */
 package uk.me.gumbley.xplp;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -31,6 +35,7 @@ public abstract class LauncherCreator {
     private final String mLibraryDirectory;
     private final Set<Artifact> mTransitiveArtifacts;
     private final Set<File> mResourceDirectories;
+    private final Properties mParameterProperties;
 
     public LauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -38,7 +43,8 @@ public abstract class LauncherCreator {
             final String applicationName,
             final String libraryDirectory,
             final Set<Artifact> transitiveArtifacts,
-            final Set<File> resourceDirectories) {
+            final Set<File> resourceDirectories,
+            final Properties parameterProperties) {
                 mMojo = mojo;
                 mOutputDirectory = outputDirectory;
                 mMainClassName = mainClassName;
@@ -46,6 +52,7 @@ public abstract class LauncherCreator {
                 mLibraryDirectory = libraryDirectory;
                 mTransitiveArtifacts = transitiveArtifacts;
                 mResourceDirectories = resourceDirectories;
+                mParameterProperties = parameterProperties;
     }
 
     /**
@@ -90,10 +97,24 @@ public abstract class LauncherCreator {
         return mLibraryDirectory;
     }
 
+    /**
+     * @return the resourceDirectories
+     */
+    protected final Set<File> getResourceDirectories() {
+        return mResourceDirectories;
+    }
+
+    /**
+     * @return the parameterProperties
+     */
+    protected final Properties getParameterProperties() {
+        return mParameterProperties;
+    }
+
     public abstract void createLauncher() throws IOException;
 
     protected void copyPluginResource(final String resourceName, final File destinationFile) throws IOException {
-        final InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
+        final InputStream resourceAsStream = getPluginResourceAsStream(resourceName);
         if (resourceAsStream == null) {
             final String message = "Could not open resource " + resourceName;
             mMojo.getLog().warn(message);
@@ -138,6 +159,12 @@ public abstract class LauncherCreator {
         mMojo.getLog().warn(message);
         throw new IOException(message);
     }
+    
+    private InputStream getPluginResourceAsStream(final String resourceName) {
+        final InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
+        return resourceAsStream;
+    }
+    
     /**
      * Copy a file from its source to a destination directory.
      * @param sourceFile the source file
@@ -208,6 +235,76 @@ public abstract class LauncherCreator {
             } else {
                 getMojo().getLog().info("Not copying transitive artifact " + artifact + " since it is not a compile-scoped jar");
             }
+        }
+    }
+
+    protected void copyInterpolatedProjectResource(final String resourceName, final File outputFile) throws IOException {
+        final BufferedReader br = new BufferedReader(new InputStreamReader(getProjectResourceAsStream(resourceName)));
+        copyInterpolatedResource(resourceName, outputFile, br);
+    }
+    
+    protected void copyInterpolatedPluginResource(final String resourceName, final File outputFile) throws IOException {
+        final BufferedReader br = new BufferedReader(new InputStreamReader(getPluginResourceAsStream(resourceName)));
+        copyInterpolatedResource(resourceName, outputFile, br);
+    }
+
+    private void copyInterpolatedResource(
+            final String resourceName,
+            final File outputFile,
+            final BufferedReader br) throws IOException {
+        long bytesCopied = 0;
+        final PropertiesInterpolator interpolator = new PropertiesInterpolator(getParameterProperties());
+        try {
+            final String lineSeparator = System.getProperty("line.separator");
+            final FileWriter fw = createFileWriter(outputFile);
+            try {
+                while (true) {
+                    final String line = br.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    try {
+                        String outLine = interpolator.interpolate(line);
+                        fw.write(outLine);
+                        bytesCopied += outLine.length();
+                        if (!outLine.endsWith(lineSeparator)) {
+                            fw.write(lineSeparator);
+                            bytesCopied += lineSeparator.length();
+                        }
+                    } catch (final IllegalStateException e) {
+                        final String message = "Cannot interpolate whilst processing " + resourceName + ": " + e.getMessage();
+                        getMojo().getLog().warn(message);
+                        throw new IOException(message);
+                    }
+                }
+            } finally {
+                try {
+                    fw.close();
+                } catch (final IOException e) {
+                    // nothing
+                }
+            }
+        } finally {
+            try {
+                br.close();
+            } catch (final IOException e) {
+                // nothing
+            }
+        }
+        getMojo().getLog().info("Created " +
+            outputFile.getAbsolutePath() +
+            " [" + bytesCopied + " byte(s) copied]");
+        
+    }
+
+    private FileWriter createFileWriter(final File outputFile) throws IOException {
+        try {
+            return new FileWriter(outputFile);
+        } catch (final IOException e) {
+            final String message = "Could not create destination file " +
+            outputFile.getAbsolutePath() + ": " + e.getMessage();
+            mMojo.getLog().warn(message);
+            throw new IOException(message);
         }
     }
 }

@@ -9,7 +9,7 @@
                 <string>${xplp.bundleostype}</string>
             </array>
             <key>CFBundleTypeName</key>
-            <string>Mindmap</string>
+            <string>${xplp.bundletypename}</string>
             <key>CFBundleTypeExtensions</key>
             <array>
                 <string>${xplp.filetype}</string>
@@ -25,7 +25,7 @@
     <key>CFBundleAllowMixedLocalizations</key>
     <string>false</string>
     <key>CFBundleGetInfoString</key>
-    <string>${project.description}</string>
+    <string>${project.version}, ${project.description}</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleIdentifier</key>
@@ -39,7 +39,7 @@
     <key>CFBundleSignature</key>
     <string>${xplp.bundlesignature}</string>
     <key>CFBundleIconFile</key>
-    <string>${xplp.iconsfile}</string>
+    <string>${xplp.iconsfilename}</string>
     <key>Java</key>
     <dict>
         <key>MainClass</key>
@@ -48,26 +48,14 @@
         <string>1.4+</string>
         <key>ClassPath</key>
         <array>
-        	${xplp.macosxclasspatharray}
-            <string>$JAVAROOT/lib/ant/lib/dom.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/jax-qname.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/jaxb-api.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/jaxb-impl.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/jaxb-libs.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/namespace.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/relaxngDatatype.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/sax.jar</string>
-            <string>$JAVAROOT/lib/ant/lib/xsdlib.jar</string>
-            <string>$JAVAROOT/lib/commons-lang-2.0.jar</string>
-            <string>$JAVAROOT/lib/forms-1.0.5.jar</string>
-            <string>$JAVAROOT/lib/freemind.jar</string>
+ ${xplp.macosxclasspatharray}
         </array>
         <key>Properties</key>
         <dict>
             <key>com.apple.mrj.application.apple.menu.about.name</key>
             <string>${xplp.applicationname}</string>
             <key>apple.awt.textantialiasing</key>
-            <string>false</string>
+            <string>true</string>
             <key>com.apple.smallTabs</key>
             <string>false</string>
             <key>apple.laf.useScreenMenuBar</key>
@@ -75,7 +63,7 @@
             <key>com.apple.mrj.application.live-resize</key>
             <string>true</string>
             <key>apple.awt.antialiasing</key>
-            <string>false</string>
+            <string>true</string>
             <key>apple.awt.showGrowBox</key>
             <string>true</string>
         </dict>

@@ -5,6 +5,7 @@ package uk.me.gumbley.xplp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -20,10 +21,10 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final File outputDirectory,
             final String mainClassName,
             final String applicationName,
-            final String libraryDirectory, final Set<Artifact> transitiveArtifacts, Set<File> resourceDirectories) {
+            final String libraryDirectory, final Set<Artifact> transitiveArtifacts, Set<File> resourceDirectories, Properties parameterProperties) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
-            transitiveArtifacts, resourceDirectories);
+            transitiveArtifacts, resourceDirectories, parameterProperties);
     }
 
     /**

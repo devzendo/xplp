@@ -1,0 +1,69 @@
+package uk.me.gumbley.xplp;
+
+import java.util.Properties;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+
+/**
+ * Tests correct interpolation of name=value pairs from a
+ * Properties object into a String, using Ant-style references
+ * to names - e.g ${name}.
+ * 
+ * @author matt
+ *
+ */
+public class TestPropertiesInterpolation {
+    private Properties mProps;
+    private PropertiesInterpolator mInterpolator;
+    private String mLibsString;
+    @Before
+    public void getPrerequisites() {
+        mProps = new Properties();
+        mProps.put("key", "value");
+        mProps.put("long.key.name", "long value");
+        
+        final String lineSeparator = System.getProperty("line.separator");
+        final StringBuilder sb = new StringBuilder();
+        sb.append("            <string>$JAVAROOT/lib/BeanCounter-0.1.0-SNAPSHOT.jar</string>" + lineSeparator);
+        sb.append("            <string>$JAVAROOT/lib/MiniMiser-0.1.0-SNAPSHOT.jar</string>" + lineSeparator);
+        mLibsString = sb.toString();
+        mProps.put("xplp.macosxclasspatharray", mLibsString);
+        
+        mInterpolator = new PropertiesInterpolator(mProps);
+    }
+    
+    @Test
+    public void nullAndEmptyPassedStraightThrough() {
+        Assert.assertNull(mInterpolator.interpolate(null));
+        Assert.assertEquals(0, mInterpolator.interpolate("").length());
+    }
+    @Test
+    public void noInterpolation() {
+        Assert.assertEquals("verbatim text", mInterpolator.interpolate("verbatim text"));
+    }
+    @Test
+    public void replaceOneInstance() {
+        Assert.assertEquals("check value test", mInterpolator.interpolate("check ${key} test"));
+        Assert.assertEquals("check long value test", mInterpolator.interpolate("check ${long.key.name} test"));
+    }
+    @Test
+    public void replaceMultipleOccurrences() {
+        Assert.assertEquals("check value test value investigate", mInterpolator.interpolate("check ${key} test ${key} investigate"));
+    }
+    @Test
+    public void replaceMultipleOccurrencesMultipleKeys() {
+        Assert.assertEquals("check value test long value foo long value",
+            mInterpolator.interpolate("check ${key} test ${long.key.name} foo ${long.key.name}"));
+    }
+    @Test(expected = IllegalStateException.class)
+    public void variableNotFound() {
+        mInterpolator.interpolate("wahey ${nonexistant} frugal!");
+    }
+    @Test
+    public void replaceLongString() {
+        Assert.assertEquals(mLibsString, mInterpolator.interpolate("${xplp.macosxclasspatharray}"));
+    }
+}
