@@ -1,18 +1,31 @@
 <assembly>
-	<id>distribution</id>
+	<id></id> <!--  no id since the artifact name is in the
+	                .tar.gz, and that's descriptive enough -->
 	<formats>
-		<format>zip</format>
+		<format>tar.gz</format>
 	</formats>
 	<baseDirectory>/</baseDirectory>
 	<includeBaseDirectory>true</includeBaseDirectory>
 
-	<dependencySets>
-		<dependencySet>
-			<useProjectArtifact>false</useProjectArtifact>
-			<useTransitiveDependencies>true</useTransitiveDependencies>
-			<outputDirectory>lib/</outputDirectory>
-			<scope>compile</scope>
-		</dependencySet>
-	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}/</directory>
+			<outputDirectory>/</outputDirectory>
+			<excludes>
+				<exclude>*.app/**/JavaApplicationStub</exclude>
+			</excludes>
+			<includes>
+				<include>*.app/**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.build.directory}/</directory>
+			<outputDirectory>/</outputDirectory>
+			<fileMode>0755</fileMode>
+			<includes>
+				<include>*.app/**/JavaApplicationStub</include>
+			</includes>
+		</fileSet>
+	</fileSets>
 
 </assembly>
