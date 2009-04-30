@@ -128,6 +128,15 @@ public final class CreateLauncherMojo extends AbstractMojo {
      */
     private String bundleTypeName;
     
+    // Windows specific parameters
+    /**
+     * Whether to use the Console or GUI Janel EXE.
+     * Can be "Console" or "GUI"
+     * 
+     * @parameter expression="${xplp.janeltype}" default-value="GUI"
+     */
+    private String janelType;
+    
     /**
      * {@inheritDoc}
      */
@@ -149,14 +158,15 @@ public final class CreateLauncherMojo extends AbstractMojo {
         if (os.equals("MacOSX")) {
             launcherCreator = new MacOSXLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
-                libraryDirectory, transitiveArtifacts, resourceDirectories,
+                libraryDirectory, transitiveArtifacts,
+                resourceDirectories,
                 parameterProperties, fileType, iconsFileName,
                 bundleSignature, bundleOsType, bundleTypeName);
         } else if (os.equals("Windows")) {
             launcherCreator = new WindowsLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
-                resourceDirectories, parameterProperties);
+                resourceDirectories, parameterProperties, janelType);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,

@@ -32,13 +32,16 @@ public final class PropertiesInterpolator {
     }
 
     /**
-     * Replace any ${names} with their ${values}
+     * Replace any ${names} with their ${values}, except in # lines
      * @param input the input string, can be null
      * @return the output, null iff input == null
      */
     public String interpolate(final String input) {
         //System.out.println("Interpolating '" + input + "'");
         if (input == null || input.length() == 0) {
+            return input;
+        }
+        if (input.matches("^\\s*#.*$")) {
             return input;
         }
         String s = input;

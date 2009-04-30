@@ -6,20 +6,12 @@
 	<fileSets>
 		<fileSet>
 			<directory>${project.build.directory}</directory>
+			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>${project.artifactId}.exe</include> <!--  may be windows or console, copied by plugin -->
 				<include>${project.artifactId}.lap</include> <!--  resources filtered appropriately -->
+				<include>lib/**</include>
 			</includes>
 		</fileSet>
-		<!--  could add the copying of src/main/verbatim to / here? -->
 	</fileSets>
-	<dependencySets>
-		<dependencySet>
-			<outputDirectory>lib/</outputDirectory>
-			<scope>compile</scope>
-			<useProjectArtifact>true</useProjectArtifact>
-			<useTransitiveDependencies>true</useTransitiveDependencies>
-		</dependencySet>
-	</dependencySets>
-
 </assembly>

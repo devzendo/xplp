@@ -66,4 +66,9 @@ public class TestPropertiesInterpolation {
     public void replaceLongString() {
         Assert.assertEquals(mLibsString, mInterpolator.interpolate("${xplp.macosxclasspatharray}"));
     }
+    @Test
+    public void dontInterpolateInComments() {
+        Assert.assertEquals("# ${env.HOME}", mInterpolator.interpolate("# ${env.HOME}"));
+    }
+    
 }
