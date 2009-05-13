@@ -5,7 +5,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.build.directory}</directory>
+			<directory>${project.build.directory}/windows</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>${project.artifactId}.exe</include> <!--  may be windows or console, copied by plugin -->

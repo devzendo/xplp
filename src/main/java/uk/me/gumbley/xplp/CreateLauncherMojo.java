@@ -145,14 +145,14 @@ public final class CreateLauncherMojo extends AbstractMojo {
         if (os == null || os.equals("none")) {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }
+        final Set<Artifact> transitiveArtifacts = getTransitiveDependencies();
+        final Set<File> resourceDirectories = getResourceDirectories();
+        final Properties parameterProperties = getParameterProperties();
         getLog().info("Operating System:  " + os);
         getLog().info("Output directory:  " + outputDirectory);
         getLog().info("Main class name:   " + mainClassName);
         getLog().info("Application name:  " + applicationName);
         getLog().info("Library directory: " + libraryDirectory);
-        final Set<Artifact> transitiveArtifacts = getTransitiveDependencies();
-        final Set<File> resourceDirectories = getResourceDirectories();
-        final Properties parameterProperties = getParameterProperties();
         
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
@@ -187,14 +187,6 @@ public final class CreateLauncherMojo extends AbstractMojo {
     }
     
     private Properties getParameterProperties() {
-        getLog().info("maven properties");
-        final Properties mavenProperties = mavenProject.getProperties();
-        for (Object key : mavenProperties.keySet()) {
-            getLog().info("key" + key + " class " + key.getClass().getName());
-            final Object value = mavenProperties.get(key);
-            getLog().info("value" + value + " class " + (value == null ? "null" : value.getClass().getName()));
-        }
-        
         final Properties properties = new Properties();
         // TODO there has to be an automated way of doing this!
         // mavenProject.getProperties() ?

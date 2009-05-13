@@ -1,18 +1,32 @@
 <assembly>
-	<id>distribution</id>
+	<id></id> <!--  no id since the artifact name is in the
+	                .tar.gz, and that's descriptive enough -->
 	<formats>
-		<format>zip</format>
+		<format>tar.gz</format>
 	</formats>
 	<baseDirectory>/</baseDirectory>
 	<includeBaseDirectory>true</includeBaseDirectory>
 
-	<dependencySets>
-		<dependencySet>
-			<useProjectArtifact>false</useProjectArtifact>
-			<useTransitiveDependencies>true</useTransitiveDependencies>
-			<outputDirectory>lib/</outputDirectory>
-			<scope>compile</scope>
-		</dependencySet>
-	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}/linux</directory>
+			<outputDirectory>/</outputDirectory>
+			<excludes>
+				<exclude>bin/**</exclude>
+			</excludes>
+			<includes>
+				<include>lib/**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.build.directory}/linux</directory>
+			<outputDirectory>/</outputDirectory>
+			<fileMode>0755</fileMode>
+			<includes>
+				<include>bin/**</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+
 
 </assembly>

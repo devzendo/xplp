@@ -18,6 +18,10 @@ import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.codehaus.plexus.util.cli.CommandLineException;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
+import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
 
 /**
  * A LauncherCreator is given all the parameters, extracted from
@@ -305,6 +309,24 @@ public abstract class LauncherCreator {
             outputFile.getAbsolutePath() + ": " + e.getMessage();
             mMojo.getLog().warn(message);
             throw new IOException(message);
+        }
+    }
+
+    protected void makeExecutable(final File nonExecutableFile) {
+        getMojo().getLog().info("Making " + nonExecutableFile + " executable");
+        final Commandline cl = new  Commandline( "chmod" ); 
+        cl.addArguments( new  String [] { "a+x" , nonExecutableFile.getAbsolutePath()  } ); 
+        try {
+            final StringStreamConsumer output = new StringStreamConsumer();
+            final StringStreamConsumer error = new StringStreamConsumer(); 
+            final int returnValue = CommandLineUtils.executeCommandLine(cl, output, error);
+            if (returnValue != 0) {
+                getMojo().getLog().warn("chmod exit code is " + returnValue);
+                getMojo().getLog().warn("chmod output: " + output.getOutput());
+                getMojo().getLog().warn("chmod error output: " + error.getOutput());
+            }
+        } catch (final CommandLineException e) {
+            getMojo().getLog().warn("Couldn't run chmod: " + e.getMessage());
         }
     }
 }

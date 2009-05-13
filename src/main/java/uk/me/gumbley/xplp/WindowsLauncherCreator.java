@@ -58,20 +58,22 @@ public class WindowsLauncherCreator extends LauncherCreator {
         validate();
         getMojo().getLog().info("Janel .EXE type:   " + mJanelType);
         
-        final File libDir = new File(getOutputDirectory(), "lib");
+        final File osOutputDir = new File(getOutputDirectory(), "windows");
+        final File libDir = new File(osOutputDir, "lib");
+        osOutputDir.mkdirs();
         libDir.mkdirs();
-        final boolean allDirsOK = libDir.exists();
+        final boolean allDirsOK = osOutputDir.exists() && libDir.exists();
         if (!allDirsOK) {
             throw new IOException("Could not create required directories under " + getOutputDirectory().getAbsolutePath());
         }
         
-        final File outputJanelEXE = new File(getOutputDirectory(), getApplicationName() + ".exe");
+        final File outputJanelEXE = new File(osOutputDir, getApplicationName() + ".exe");
         final String janelEXEResource = "windows/" + (mJanelType.equals("Console") ? "JanelConsole.exe" : "JanelWindows.exe");
         copyPluginResource(janelEXEResource, outputJanelEXE);
         // TODO icon munging in the launcher .EXE
-        copyPluginResource("windows/" + MSVCR71_DLL, new File(getOutputDirectory(), MSVCR71_DLL));
+        copyPluginResource("windows/" + MSVCR71_DLL, new File(osOutputDir, MSVCR71_DLL));
         
-        copyInterpolatedPluginResource("windows/launcher.lap", new File(getOutputDirectory(), getApplicationName() + ".lap"));
+        copyInterpolatedPluginResource("windows/launcher.lap", new File(osOutputDir, getApplicationName() + ".lap"));
 
         copyTransitiveArtifacts(libDir);
     }

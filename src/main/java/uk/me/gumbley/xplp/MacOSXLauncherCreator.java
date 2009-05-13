@@ -10,10 +10,6 @@ import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
-import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
 
 
 /**
@@ -80,18 +76,22 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         getMojo().getLog().info("Bundle OS type:    " + mBundleOsType);
         getMojo().getLog().info("Bundle type name:  " + mBundleTypeName);
         
-        final File appDir = new File(getOutputDirectory(), getApplicationName() + ".app");
+        final File osOutputDir = new File(getOutputDirectory(), "macosx");
+        final File appDir = new File(osOutputDir, getApplicationName() + ".app");
         final File contentsDir = new File(appDir, "Contents");
         final File macOSDir = new File(contentsDir, "MacOS");
         final File resourcesDir = new File(contentsDir, "Resources");
         final File libDir = new File(resourcesDir, "Java/lib");
+        osOutputDir.mkdirs();
         appDir.mkdirs();
         contentsDir.mkdirs();
         macOSDir.mkdirs();
         resourcesDir.mkdirs();
         libDir.mkdirs();
-        final boolean allDirsOK = appDir.exists() && contentsDir.exists() &&
-            macOSDir.exists() && resourcesDir.exists() && libDir.exists();
+        final boolean allDirsOK = osOutputDir.exists() &&
+            appDir.exists() && contentsDir.exists() &&
+            macOSDir.exists() && resourcesDir.exists() &&
+            libDir.exists();
         if (!allDirsOK) {
             throw new IOException("Could not create required directories under " + appDir.getAbsolutePath());
         }
@@ -106,24 +106,6 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         copyInterpolatedPluginResource("macosx/PkgInfo", new File(contentsDir, "PkgInfo"));
         
         copyTransitiveArtifacts(libDir);
-    }
-
-    private void makeExecutable(final File nonExecutableFile) {
-        getMojo().getLog().info("Making " + nonExecutableFile + " executable");
-        final Commandline cl = new  Commandline( "chmod" ); 
-        cl.addArguments( new  String [] { "a+x" , nonExecutableFile.getAbsolutePath()  } ); 
-        try {
-            final StringStreamConsumer output = new StringStreamConsumer();
-            final StringStreamConsumer error = new StringStreamConsumer(); 
-            final int returnValue = CommandLineUtils.executeCommandLine(cl, output, error);
-            if (returnValue != 0) {
-                getMojo().getLog().warn("chmod exit code is " + returnValue);
-                getMojo().getLog().warn("chmod output: " + output.getOutput());
-                getMojo().getLog().warn("chmod error output: " + error.getOutput());
-            }
-        } catch (final CommandLineException e) {
-            getMojo().getLog().warn("Couldn't run chmod: " + e.getMessage());
-        }
     }
 
     private void setTransitiveArtifactsAsParameterProperty() {

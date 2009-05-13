@@ -17,11 +17,14 @@ import org.apache.maven.plugin.AbstractMojo;
  *
  */
 public class LinuxLauncherCreator extends LauncherCreator {
-    public LinuxLauncherCreator(AbstractMojo mojo,
+    public LinuxLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
             final String mainClassName,
             final String applicationName,
-            final String libraryDirectory, final Set<Artifact> transitiveArtifacts, Set<File> resourceDirectories, Properties parameterProperties) {
+            final String libraryDirectory,
+            final Set<Artifact> transitiveArtifacts,
+            final Set<File> resourceDirectories,
+            final Properties parameterProperties) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories, parameterProperties);
@@ -32,6 +35,22 @@ public class LinuxLauncherCreator extends LauncherCreator {
      */
     @Override
     public void createLauncher() throws IOException {
-        // TODO Auto-generated method stub
+        final File osOutputDir = new File(getOutputDirectory(), "linux");
+        final File binDir = new File(osOutputDir, "bin");
+        final File libDir = new File(osOutputDir, "lib");
+        osOutputDir.mkdirs();
+        binDir.mkdirs();
+        libDir.mkdirs();
+        final boolean allDirsOK = osOutputDir.exists() &&
+            binDir.exists() && libDir.exists();
+        if (!allDirsOK) {
+            throw new IOException("Could not create required directories under " + getOutputDirectory().getAbsolutePath());
+        }
+        
+        final File outputRunScript = new File(binDir, getApplicationName());
+        copyInterpolatedPluginResource("linux/launcher.sh", outputRunScript);
+        makeExecutable(outputRunScript);
+        
+        copyTransitiveArtifacts(libDir);
     }
 }
