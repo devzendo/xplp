@@ -14,6 +14,9 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Creates a Mac OS X launcher directory structure.
+ * See
+ * http://developer.apple.com/documentation/Java/Conceptual/Java14Development/03-JavaDeployment/JavaDeployment.html
+ * for details.
  * 
  * @author matt
  *
