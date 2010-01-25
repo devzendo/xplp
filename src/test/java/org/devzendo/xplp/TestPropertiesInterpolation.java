@@ -1,7 +1,8 @@
-package uk.me.gumbley.xplp;
+package org.devzendo.xplp;
 
 import java.util.Properties;
 
+import org.devzendo.xplp.PropertiesInterpolator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

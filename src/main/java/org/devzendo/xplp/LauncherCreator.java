@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.me.gumbley.xplp;
+package org.devzendo.xplp;
 
 import java.io.BufferedReader;
 import java.io.File;

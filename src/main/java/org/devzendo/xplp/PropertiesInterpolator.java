@@ -1,7 +1,7 @@
 /**
  * 
  */
-package uk.me.gumbley.xplp;
+package org.devzendo.xplp;
 
 import java.util.Properties;
 import java.util.regex.Matcher;
