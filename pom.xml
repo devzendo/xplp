@@ -11,7 +11,7 @@
 	<description>A Maven plugin that creates launchers for Windows
   	(using Janel), Mac OS X (creating a .app structure) or Linux
   	(using a shell script).
-  	(GPL2) 2008-2010 Matt Gumbley, DevZendo.org</description>
+  	(Apache License v2) 2008-2010 Matt Gumbley, DevZendo.org</description>
 
 	<parent>
 		<groupId>org.devzendo</groupId>
