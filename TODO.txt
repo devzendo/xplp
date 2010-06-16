@@ -1,0 +1,14 @@
+Replace my homebrew properties interpolation with the standard Maven way of
+doing this.
+
+Write documentation using the standard Maven doc tools.
+
+Retrofit tests using the Super Helpful Integration Test Thingy.
+
+Windows:
+  Allow custom lines to be added to the .lap file.
+  Munge the icon into the Janel binary.
+
+Linux:
+  Test it :-)
+  
