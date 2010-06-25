@@ -1,0 +1,68 @@
+Linux launcher example from BeanMinder
+
+ On Linux, the BeanMinder project creates a launcher shell script, and
+ libraries directory, then archives this into a .tar.gz file.
+
+ Here are the relevant sections of the pom.xml for that project:
+
++----
+...
+  <dependencies>
+    <dependency>
+      <groupId>org.devzendo</groupId>
+      <artifactId>BeanMinderCore</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Create the Linux launcher structure under target/linux. -->
+      <plugin>
+        <groupId>org.devzendo</groupId>
+        <artifactId>CrossPlatformLauncherPlugin</artifactId>
+        <configuration>
+          <os>Linux</os>
+          <applicationName>BeanMinder</applicationName>
+          <mainClassName>org.devzendo.minimiser.MiniMiser</mainClassName>
+        </configuration>
+        <executions>
+          <execution>
+            <id>createlauncher</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>createlauncher</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Package the above launcher structure into a .tar.gz archive -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>linux-launcher-distribution</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>CrossPlatformLauncherPlugin</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+...
++----

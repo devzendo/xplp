@@ -1,0 +1,11 @@
+Configuration Examples
+
+  * {{{macosx.html}Mac OS X}} illustrating the creation of a .app launcher
+    directory structure, and archiving it into a .tar.gz.
+
+  * {{{windows.html}Windows}} illustrating the creation of a Janel launcher
+    directory structure and configuration, and archiving it into a .zip.
+
+  * {{{linux.html}Linux}} illustrating the creation of a shell script launcher
+    with library directory structure, and archiving it into a .tar.gz.
+    

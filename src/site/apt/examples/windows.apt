@@ -1,0 +1,69 @@
+Windows laucher example from BenMinder
+
+ For Windows, the BeanMinder project builds a directory structure containing a
+ .exe launcher, .lap control file and libraries directory, and archives it into
+ a .zip file.
+
+ Here are the relevant sections of the pom.xml from that project:
+
++----
+...
+  <dependencies>
+    <dependency>
+      <groupId>org.devzendo</groupId>
+      <artifactId>BeanMinderCore</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Create the Windows launcher structure under target/windows. -->
+      <plugin>
+        <groupId>org.devzendo</groupId>
+        <artifactId>CrossPlatformLauncherPlugin</artifactId>
+        <configuration>
+          <os>Windows</os>
+          <applicationName>BeanMinder</applicationName>
+          <mainClassName>org.devzendo.minimiser.MiniMiser</mainClassName>
+        </configuration>
+        <executions>
+          <execution>
+            <id>createlauncher</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>createlauncher</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- Package the above launcher structure into a .zip archive -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>windows-launcher-distribution</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>CrossPlatformLauncherPlugin</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+...
++----

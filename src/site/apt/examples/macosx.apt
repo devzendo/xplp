@@ -1,0 +1,108 @@
+Mac OS X launcher example from BeanMinder
+
+ For Mac OS X, the BeanMinder project builds a .app launcher structure,
+ and archives it into a .tar.gz file.
+ 
+ Here are the relevant sections of the pom.xml from that project:
+
++----
+...
+  <dependencies>
+    <dependency>
+      <groupId>org.devzendo</groupId>
+      <artifactId>BeanMinderCore</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency> <!-- Not released in central -->
+      <groupId>ch.randelshofer</groupId>
+      <artifactId>libquaqua</artifactId>
+      <type>zip</type>
+      <version>6.5</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <!-- Create the Mac OS X BeanMinder.app launcher structure under 
+           target/macosx. -->
+      <plugin>
+        <groupId>org.devzendo</groupId>
+        <artifactId>CrossPlatformLauncherPlugin</artifactId>
+        <configuration>
+          <os>MacOSX</os>
+          <applicationName>BeanMinder</applicationName>
+          <mainClassName>org.devzendo.minimiser.MiniMiser</mainClassName>
+          <iconsFileName>BeanMinder.icns</iconsFileName>
+          <bundleSignature>BM</bundleSignature>
+        </configuration>
+        <executions>
+          <execution>
+            <id>createlauncher</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>createlauncher</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Copy the Quaqua native libraries into the correct location in
+           the Mac OS X launcher structure created above. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>package</phase>
+            <goals>
+                <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>ch.randelshofer</groupId>
+                  <artifactId>libquaqua</artifactId>
+                  <version>6.5</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <includes>*</includes>
+                  <outputDirectory>${project.build.directory}/macosx/BeanMinder.app/Contents/Resources/Java/lib</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <!-- other configurations here -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Package up the above .app structure into a .tar.gz archive  -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>macosx-launcher-distribution</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>CrossPlatformLauncherPlugin</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+...
++----
+ 

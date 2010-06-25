@@ -1,0 +1,18 @@
+Frequently Asked Questions
+
+ (Or things that will be changed/fixed as it moves out of SNAPSHOT status)
+ 
+* General
+  * Why is the plugin implementing its own property interpolation?
+    It was easy to implement, I already had similar code. I might change it
+    to use any Maven API for this later.
+  * I need to set custom VM parameters such as min/max heap size. How is this done?
+    It can't be done, yet.
+      
+* Windows-specific
+  * Why can't I add custom lines into the .lap file that's generated?
+    Just haven't implement that yet. It's high on the list.
+    
+* Mac OS X-specific
+
+* Linux specific
