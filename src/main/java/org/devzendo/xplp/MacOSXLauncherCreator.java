@@ -44,6 +44,21 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     private final String mBundleOsType;
     private final String mBundleTypeName;
 
+    /**
+     * @param mojo the parent mojo class
+     * @param outputDirectory where to create the .app structure 
+     * @param mainClassName the main class
+     * @param applicationName the name of the application
+     * @param libraryDirectory where the libraries are stored
+     * @param transitiveArtifacts the set of transitive artifact dependencies
+     * @param resourceDirectories the project's resource directories
+     * @param parameterProperties the plugin configuration parameters, as properties
+     * @param fileType the file type (currently unused)
+     * @param iconsFileName the name of the icons file
+     * @param bundleSignature the bundle signature
+     * @param bundleOsType the bundle OS type
+     * @param bundleTypeName the bundle type name
+     */
     public MacOSXLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
             final String mainClassName,
@@ -69,8 +84,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     }
 
     private void validate() {
-        if (mIconsFileName == null ||
-                mIconsFileName.length() == 0) {
+        if (mIconsFileName == null || mIconsFileName.length() == 0) {
             final String message = "No iconsFileName specified - this is mandatory for Mac OS X";
             getMojo().getLog().warn(message);
             throw new IllegalStateException(message);
@@ -107,10 +121,10 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         macOSDir.mkdirs();
         resourcesDir.mkdirs();
         libDir.mkdirs();
-        final boolean allDirsOK = osOutputDir.exists() &&
-            appDir.exists() && contentsDir.exists() &&
-            macOSDir.exists() && resourcesDir.exists() &&
-            libDir.exists();
+        final boolean allDirsOK = osOutputDir.exists()
+            && appDir.exists() && contentsDir.exists()
+            && macOSDir.exists() && resourcesDir.exists() 
+            && libDir.exists();
         if (!allDirsOK) {
             throw new IOException("Could not create required directories under " + appDir.getAbsolutePath());
         }
@@ -130,7 +144,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     private void setTransitiveArtifactsAsParameterProperty() {
         final String lineSeparator = System.getProperty("line.separator");
         final StringBuilder libsAsArtifacts = new StringBuilder();
-        for (Artifact transitiveArtifact: getTransitiveArtifacts()) {
+        for (final Artifact transitiveArtifact : getTransitiveArtifacts()) {
             if (transitiveArtifact.getScope().equals("compile")
                     && transitiveArtifact.getType().equals("jar")) {
                 libsAsArtifacts.append("            <string>$JAVAROOT/lib/");

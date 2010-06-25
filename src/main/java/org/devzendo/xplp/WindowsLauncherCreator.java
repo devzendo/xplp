@@ -36,7 +36,18 @@ public class WindowsLauncherCreator extends LauncherCreator {
     private static final String MSVCR71_DLL = "msvcr71.dll";
     private final String mJanelType;
 
-    public WindowsLauncherCreator(AbstractMojo mojo,
+    /**
+     * @param mojo the parent mojo class
+     * @param outputDirectory where to create the .app structure 
+     * @param mainClassName the main class
+     * @param applicationName the name of the application
+     * @param libraryDirectory where the libraries are stored
+     * @param transitiveArtifacts the set of transitive artifact dependencies
+     * @param resourceDirectories the project's resource directories
+     * @param parameterProperties the plugin configuration parameters, as properties
+     * @param janelType the launcher type, Console or GUI.
+     */
+    public WindowsLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
             final String mainClassName,
             final String applicationName,
@@ -53,13 +64,12 @@ public class WindowsLauncherCreator extends LauncherCreator {
     }
     
     private void validate() {
-        if (mJanelType == null ||
-                mJanelType.length() == 0) {
+        if (mJanelType == null || mJanelType.length() == 0) {
             final String message = "No janelType specified - this is mandatory for Windows";
             getMojo().getLog().warn(message);
             throw new IllegalStateException(message);
         }
-        if (! (mJanelType.equals("Console") || mJanelType.equals("GUI"))) {
+        if (!(mJanelType.equals("Console") || mJanelType.equals("GUI"))) {
             final String message = "janelType must be either 'Console' or 'GUI' (GUI is the default if not specified)";
             getMojo().getLog().warn(message);
             throw new IllegalStateException(message);

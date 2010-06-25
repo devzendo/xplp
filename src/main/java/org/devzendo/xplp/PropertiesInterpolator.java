@@ -61,7 +61,7 @@ public final class PropertiesInterpolator {
             return input;
         }
         String s = input;
-        while(true) {
+        while (true) {
             variableReferenceMatcher.reset(s);
             if (variableReferenceMatcher.find()) {
                 //System.out.println("Found variable");

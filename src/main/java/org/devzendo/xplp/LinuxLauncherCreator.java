@@ -33,6 +33,16 @@ import org.apache.maven.plugin.AbstractMojo;
  *
  */
 public class LinuxLauncherCreator extends LauncherCreator {
+    /**
+     * @param mojo the parent mojo class
+     * @param outputDirectory where to create the .app structure 
+     * @param mainClassName the main class
+     * @param applicationName the name of the application
+     * @param libraryDirectory where the libraries are stored
+     * @param transitiveArtifacts the set of transitive artifact dependencies
+     * @param resourceDirectories the project's resource directories
+     * @param parameterProperties the plugin configuration parameters, as properties
+     */
     public LinuxLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
             final String mainClassName,
@@ -57,8 +67,8 @@ public class LinuxLauncherCreator extends LauncherCreator {
         osOutputDir.mkdirs();
         binDir.mkdirs();
         libDir.mkdirs();
-        final boolean allDirsOK = osOutputDir.exists() &&
-            binDir.exists() && libDir.exists();
+        final boolean allDirsOK = osOutputDir.exists() 
+            && binDir.exists() && libDir.exists();
         if (!allDirsOK) {
             throw new IOException("Could not create required directories under " + getOutputDirectory().getAbsolutePath());
         }

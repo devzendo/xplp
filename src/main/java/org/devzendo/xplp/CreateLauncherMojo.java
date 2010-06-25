@@ -33,11 +33,11 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 
 /**
- * A Maven plugin that creates launchers for Windows
+ * A Maven plugin that creates launcher directory structures for Windows
  * (using Janel), Mac OS X (creating a .app structure) or Linux
- * (using a shell script)
+ * (using a shell script).
  * 
- * @author matt
+ * @author Matt Gumbley, DevZendo.org
  * @phase generate-resources
  * @goal createlauncher
  *
@@ -72,7 +72,10 @@ public final class CreateLauncherMojo extends AbstractMojo {
     
     /**
      * The directory into which the output files will be placed.
-     * By default, this is the target directory.
+     * By default, this is the target directory. The launcher directory
+     * structure will be created in a subdirectory of this. This subdirectory
+     * will be named according to the platform specified in the os parameter,
+     * so: windows, linux or macosx.
      * 
      * @parameter expression="${project.build.directory}"
      */
@@ -89,8 +92,10 @@ public final class CreateLauncherMojo extends AbstractMojo {
 
     /**
      * The name of the application for whom this launcher is to be
-     * generated. This is used to name the application menu on
-     * Mac OS X, to name the Janel .exe/.lap files.
+     * generated. 
+     * 
+     * On Mac OS X, this is used to name the application menu.
+     * On Windows, this is used to name the Janel .exe/.lap files.
      * By default, take the client project's artifact id.
      * 
      * @required
@@ -109,36 +114,40 @@ public final class CreateLauncherMojo extends AbstractMojo {
     // Mac OS X Specific parameters -------------------------------
     
     /**
-     * Any file type that is associated with this application.
-     * This is registered in the Mac OS X Info.plist.
+     * Mac OS X only: Any file type that is associated with this application.
+     * This is registered in the Mac OS X Info.plist as CFBundleTypeExtensions.
      * 
      * @parameter expression="${xplp.filetype}"
      */
     private String fileType;
     
     /**
-     * The name of the icons file.
+     * Mac OS X only: The name of the icons file.
      * 
      * @parameter expression="${xplp.iconsfilename}"
      */
     private String iconsFileName;
     
     /**
-     * The bundle signature.
+     * Mac OS X only: The bundle signature.
+     * This is registered in the Mac OS X Info.plist as CFBundleSignature, and
+     * in the PkgInfo as APPL${xplp.bundlesignature}.
      * 
      * @parameter expression="${xplp.bundlesignature}"
      */
     private String bundleSignature;
     
     /**
-     * The bundle OS type.
+     * Mac OS X only: The bundle OS type.
+     * This is registered in the Mac OS X Info.plist as CFBundleTypeOSTypes.
      * 
      * @parameter expression="${xplp.bundleostype}"
      */
     private String bundleOsType;
     
     /**
-     * The bundle type name
+     * Mac OS X only: The bundle type name
+     * This is registered in the Mac OS X Info.plist as CFBundleTypeName.
      * 
      * @parameter expression="${xplp.bundletypename}"
      */
@@ -146,7 +155,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
     
     // Windows specific parameters
     /**
-     * Whether to use the Console or GUI Janel EXE.
+     * Windows only: Whether to use the Console or GUI Janel EXE.
      * Can be "Console" or "GUI"
      * 
      * @parameter expression="${xplp.janeltype}" default-value="GUI"
@@ -195,7 +204,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
             launcherCreator.createLauncher();
         } catch (final Exception e) {
             final StackTraceElement[] stackTrace = e.getStackTrace();
-            for (StackTraceElement stackTraceElement : stackTrace) {
+            for (final StackTraceElement stackTraceElement : stackTrace) {
                 getLog().info(stackTraceElement.toString());
             }
             throw new MojoFailureException("Could not create launcher: " + e.getMessage());
@@ -229,7 +238,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private Set<File> getResourceDirectories() {
         final HashSet<File> resourceDirs = new HashSet<File>();
         final List<Resource> resources = mavenProject.getResources();
-        for (Resource resource : resources) {
+        for (final Resource resource : resources) {
             final String directory = resource.getDirectory();
             final File directoryFile = new File(directory);
             if (directoryFile.exists() && directoryFile.isDirectory()) {
@@ -256,7 +265,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
             final Set<Artifact> result = artifactResolver.resolveTransitively(artifacts,
                 mavenProject.getArtifact(), localRepository, remoteRepositories,
                 artifactMetadataSource, null).getArtifacts(); 
-            for (Artifact artifact : result) {
+            for (final Artifact artifact : result) {
                 getLog().debug("Transitive artifact: " + artifact.toString());
                 getLog().debug("   File: " + artifact.getFile().getAbsolutePath());
             }

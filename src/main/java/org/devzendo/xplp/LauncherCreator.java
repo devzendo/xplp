@@ -57,6 +57,16 @@ public abstract class LauncherCreator {
     private final Set<File> mResourceDirectories;
     private final Properties mParameterProperties;
 
+    /**
+     * @param mojo the parent mojo class
+     * @param outputDirectory where to create the .app structure 
+     * @param mainClassName the main class
+     * @param applicationName the name of the application
+     * @param libraryDirectory where the libraries are stored
+     * @param transitiveArtifacts the set of transitive artifact dependencies
+     * @param resourceDirectories the project's resource directories
+     * @param parameterProperties the plugin configuration parameters, as properties
+     */
     public LauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
             final String mainClassName,
@@ -131,8 +141,18 @@ public abstract class LauncherCreator {
         return mParameterProperties;
     }
 
+    /**
+     * Create a launcher specific to a given platform.
+     * @throws IOException on creation failure
+     */
     public abstract void createLauncher() throws IOException;
 
+    /**
+     * Copy a resource from the plugin's resources to a file.
+     * @param resourceName the name of the resource
+     * @param destinationFile the file to write it to
+     * @throws IOException on write failure
+     */
     protected void copyPluginResource(final String resourceName, final File destinationFile) throws IOException {
         final InputStream resourceAsStream = getPluginResourceAsStream(resourceName);
         if (resourceAsStream == null) {
@@ -147,6 +167,12 @@ public abstract class LauncherCreator {
         mMojo.getLog().info("Created " + destinationFile.getAbsolutePath() + " [" + bytesCopied + " byte(s)]");
     }
 
+    /**
+     * Copy a resource from the user project to a file
+     * @param resourceName the name of the resource in the user project
+     * @param destinationFile the file to write it to
+     * @throws IOException on write failure
+     */
     protected void copyProjectResource(final String resourceName, final File destinationFile) throws IOException {
         final InputStream resourceAsStream = getProjectResourceAsStream(resourceName);
         final OutputStream outputStream = createFileOutputStream(destinationFile);
@@ -166,7 +192,7 @@ public abstract class LauncherCreator {
     }
 
     private InputStream getProjectResourceAsStream(final String resourceName) throws IOException {
-        for (File resourceDir : mResourceDirectories) {
+        for (final File resourceDir : mResourceDirectories) {
             try {
                 final InputStream resourceAsStream = new FileInputStream(new File(resourceDir, resourceName));
                 mMojo.getLog().debug("Located resource " + resourceName + " in directory " + resourceDir.getAbsolutePath());
@@ -212,14 +238,14 @@ public abstract class LauncherCreator {
         }
         final long bytesCopied = copyStream(sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath(),
             inputStream, outputStream);
-        mMojo.getLog().info("Created " +
-            destinationDirectory.getAbsoluteFile() +
-            File.separatorChar + sourceFile.getName() +
-            " [" + bytesCopied + " byte(s) copied]");
+        mMojo.getLog().info("Created "
+            + destinationDirectory.getAbsoluteFile()
+            + File.separatorChar + sourceFile.getName()
+            + " [" + bytesCopied + " byte(s) copied]");
     }
 
     private long copyStream(final String inName, final String outName,
-            final InputStream inputStream, OutputStream outputStream) 
+            final InputStream inputStream, final OutputStream outputStream) 
     throws IOException {
         final int bufsize = 16384;
         final byte[] buf = new byte[bufsize];
@@ -253,12 +279,13 @@ public abstract class LauncherCreator {
      * a destination directory.
      * @param destinationDirectory the destination directory, which
      * must exist
+     * @throws IOException on copy failure
      */
     protected void copyTransitiveArtifacts(final File destinationDirectory) throws IOException {
         getMojo().getLog().info("Copying transitive artifacts");
         final Set<Artifact> transitiveArtifacts = getTransitiveArtifacts();
         getMojo().getLog().info("There are " + transitiveArtifacts.size() + " transitive artifacts");
-        for (Artifact artifact : transitiveArtifacts) {
+        for (final Artifact artifact : transitiveArtifacts) {
             if (artifact.getScope().equals("compile") && artifact.getType().equals("jar")) {
                 getMojo().getLog().info("Copying transitive artifact " + artifact);
                 final File artifactFile = artifact.getFile();
@@ -275,11 +302,23 @@ public abstract class LauncherCreator {
         }
     }
 
+    /**
+     * Copy a user project resource to a file, interpolating with the configuration properties
+     * @param resourceName the name of the resource in the user project
+     * @param outputFile the file to write it to
+     * @throws IOException on write failure
+     */
     protected void copyInterpolatedProjectResource(final String resourceName, final File outputFile) throws IOException {
         final BufferedReader br = new BufferedReader(new InputStreamReader(getProjectResourceAsStream(resourceName)));
         copyInterpolatedResource(resourceName, outputFile, br);
     }
     
+    /**
+     * Copy a plugin resource to a file, interpolating with the configuration properties
+     * @param resourceName the name of the plugin resource
+     * @param outputFile the file to write it to
+     * @throws IOException on write failure
+     */
     protected void copyInterpolatedPluginResource(final String resourceName, final File outputFile) throws IOException {
         final BufferedReader br = new BufferedReader(new InputStreamReader(getPluginResourceAsStream(resourceName)));
         copyInterpolatedResource(resourceName, outputFile, br);
@@ -301,7 +340,7 @@ public abstract class LauncherCreator {
                         break;
                     }
                     try {
-                        String outLine = interpolator.interpolate(line);
+                        final String outLine = interpolator.interpolate(line);
                         fw.write(outLine);
                         bytesCopied += outLine.length();
                         if (!outLine.endsWith(lineSeparator)) {
@@ -328,9 +367,9 @@ public abstract class LauncherCreator {
                 // nothing
             }
         }
-        getMojo().getLog().info("Created " +
-            outputFile.getAbsolutePath() +
-            " [" + bytesCopied + " byte(s) copied]");
+        getMojo().getLog().info("Created "
+            + outputFile.getAbsolutePath() 
+            + " [" + bytesCopied + " byte(s) copied]");
         
     }
 
@@ -338,17 +377,21 @@ public abstract class LauncherCreator {
         try {
             return new FileWriter(outputFile);
         } catch (final IOException e) {
-            final String message = "Could not create destination file " +
-            outputFile.getAbsolutePath() + ": " + e.getMessage();
+            final String message = "Could not create destination file "
+                + outputFile.getAbsolutePath() + ": " + e.getMessage();
             mMojo.getLog().warn(message);
             throw new IOException(message);
         }
     }
 
+    /**
+     * Make a file executable, in the terms of the specific platform.
+     * @param nonExecutableFile some file that may not currently be executable
+     */
     protected void makeExecutable(final File nonExecutableFile) {
         getMojo().getLog().info("Making " + nonExecutableFile + " executable");
-        final Commandline cl = new  Commandline( "chmod" ); 
-        cl.addArguments( new  String [] { "a+x" , nonExecutableFile.getAbsolutePath()  } ); 
+        final Commandline cl = new  Commandline("chmod");
+        cl.addArguments(new String [] {"a+x" , nonExecutableFile.getAbsolutePath()}); 
         try {
             final StringStreamConsumer output = new StringStreamConsumer();
             final StringStreamConsumer error = new StringStreamConsumer(); 
