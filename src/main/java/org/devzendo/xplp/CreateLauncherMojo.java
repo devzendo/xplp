@@ -111,6 +111,23 @@ public final class CreateLauncherMojo extends AbstractMojo {
      */
     private String libraryDirectory;
     
+    /**
+     * A list of system properties, to be passed to the JVM via multiple
+     * -Dxxx=yyy parameters.
+     *
+     * @parameter expression="${xplp.systemproperty}"
+     */
+    private String[] systemProperties;
+    
+    /**
+     * A list of VM arguments, to be passed straight to the JVM, e.g. -Xmx2048.
+     * Note that on Mac OS X, your application shoudl set -Xdock:name=MyApplication
+     * to have the correct name in the application menu and on the dock.
+     *
+     * @parameter expression="${xplp.systemproperty}"
+     */
+    private String[] vmArguments;
+    
     // Mac OS X Specific parameters -------------------------------
     
     /**
@@ -178,6 +195,8 @@ public final class CreateLauncherMojo extends AbstractMojo {
         getLog().info("Main class name:   " + mainClassName);
         getLog().info("Application name:  " + applicationName);
         getLog().info("Library directory: " + libraryDirectory);
+        getLog().info("System properties: " + dumpArray(systemProperties));
+        getLog().info("VM Arguments:      " + dumpArray(vmArguments));
         
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
@@ -211,6 +230,22 @@ public final class CreateLauncherMojo extends AbstractMojo {
         }
     }
     
+    private String dumpArray(final Object[] objects) {
+        final StringBuilder sb = new StringBuilder();
+        if (objects != null) {
+            sb.append('[');
+            if (objects.length != 0) {
+                for (int i = 0; i < objects.length - 1; i++) {
+                    sb.append(objects[i]);
+                    sb.append(',');
+                }
+                sb.append(objects[objects.length - 1]);
+            }
+            sb.append(']');
+        }
+        return sb.toString();
+    }
+
     private Properties getParameterProperties() {
         final Properties properties = new Properties();
         // TODO there has to be an automated way of doing this!
