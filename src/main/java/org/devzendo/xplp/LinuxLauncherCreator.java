@@ -42,6 +42,8 @@ public class LinuxLauncherCreator extends LauncherCreator {
      * @param transitiveArtifacts the set of transitive artifact dependencies
      * @param resourceDirectories the project's resource directories
      * @param parameterProperties the plugin configuration parameters, as properties
+     * @param systemProperties an array of name=value system properties
+     * @param vmArguments an array of arguments to the VM
      */
     public LinuxLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -50,7 +52,7 @@ public class LinuxLauncherCreator extends LauncherCreator {
             final String libraryDirectory,
             final Set<Artifact> transitiveArtifacts,
             final Set<File> resourceDirectories,
-            final Properties parameterProperties) {
+            final Properties parameterProperties, final String[] systemProperties, final String[] vmArguments) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories, parameterProperties);

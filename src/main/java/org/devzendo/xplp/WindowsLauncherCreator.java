@@ -45,6 +45,8 @@ public class WindowsLauncherCreator extends LauncherCreator {
      * @param transitiveArtifacts the set of transitive artifact dependencies
      * @param resourceDirectories the project's resource directories
      * @param parameterProperties the plugin configuration parameters, as properties
+     * @param systemProperties an array of name=value system properties
+     * @param vmArguments an array of arguments to the VM
      * @param janelType the launcher type, Console or GUI.
      */
     public WindowsLauncherCreator(final AbstractMojo mojo,
@@ -55,7 +57,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final Set<Artifact> transitiveArtifacts,
             final Set<File> resourceDirectories,
             final Properties parameterProperties,
-            final String janelType) {
+            final String[] systemProperties, final String[] vmArguments, final String janelType) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,

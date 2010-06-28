@@ -204,18 +204,18 @@ public final class CreateLauncherMojo extends AbstractMojo {
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
                 resourceDirectories,
-                parameterProperties, fileType, iconsFileName,
-                bundleSignature, bundleOsType, bundleTypeName);
+                parameterProperties, systemProperties, vmArguments,
+                fileType, iconsFileName, bundleSignature, bundleOsType, bundleTypeName);
         } else if (os.equals("Windows")) {
             launcherCreator = new WindowsLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
-                resourceDirectories, parameterProperties, janelType);
+                resourceDirectories, parameterProperties, systemProperties, vmArguments, janelType);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
-                resourceDirectories, parameterProperties);
+                resourceDirectories, parameterProperties, systemProperties, vmArguments);
         } else {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }
