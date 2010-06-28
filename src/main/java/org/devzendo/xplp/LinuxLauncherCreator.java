@@ -52,10 +52,13 @@ public class LinuxLauncherCreator extends LauncherCreator {
             final String libraryDirectory,
             final Set<Artifact> transitiveArtifacts,
             final Set<File> resourceDirectories,
-            final Properties parameterProperties, final String[] systemProperties, final String[] vmArguments) {
+            final Properties parameterProperties, 
+            final String[] systemProperties, 
+            final String[] vmArguments) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
-            transitiveArtifacts, resourceDirectories, parameterProperties);
+            transitiveArtifacts, resourceDirectories, parameterProperties,
+            systemProperties, vmArguments);
     }
 
     /**

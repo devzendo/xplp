@@ -57,11 +57,13 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final Set<Artifact> transitiveArtifacts,
             final Set<File> resourceDirectories,
             final Properties parameterProperties,
-            final String[] systemProperties, final String[] vmArguments, final String janelType) {
+            final String[] systemProperties, 
+            final String[] vmArguments, 
+            final String janelType) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
-            parameterProperties);
+            parameterProperties, systemProperties, vmArguments);
         mJanelType = janelType;
     }
     

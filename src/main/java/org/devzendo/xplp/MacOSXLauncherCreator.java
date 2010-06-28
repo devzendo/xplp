@@ -73,11 +73,13 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
             final String[] vmArguments,
             final String fileType,
             final String iconsFileName,
-            final String bundleSignature, final String bundleOsType, final String bundleTypeName) {
+            final String bundleSignature,
+            final String bundleOsType,
+            final String bundleTypeName) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
-            parameterProperties);
+            parameterProperties, systemProperties, vmArguments);
         mFileType = fileType;
         mIconsFileName = iconsFileName;
         mBundleSignature = bundleSignature;

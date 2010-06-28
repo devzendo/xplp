@@ -56,6 +56,8 @@ public abstract class LauncherCreator {
     private final Set<Artifact> mTransitiveArtifacts;
     private final Set<File> mResourceDirectories;
     private final Properties mParameterProperties;
+    private final String[] mSystemProperties;
+    private final String[] mVmArguments;
 
     /**
      * @param mojo the parent mojo class
@@ -66,6 +68,8 @@ public abstract class LauncherCreator {
      * @param transitiveArtifacts the set of transitive artifact dependencies
      * @param resourceDirectories the project's resource directories
      * @param parameterProperties the plugin configuration parameters, as properties
+     * @param systemProperties an array of name=value system properties
+     * @param vmArguments an array of arguments to the VM
      */
     public LauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -74,7 +78,9 @@ public abstract class LauncherCreator {
             final String libraryDirectory,
             final Set<Artifact> transitiveArtifacts,
             final Set<File> resourceDirectories,
-            final Properties parameterProperties) {
+            final Properties parameterProperties, 
+            final String[] systemProperties, 
+            final String[] vmArguments) {
                 mMojo = mojo;
                 mOutputDirectory = outputDirectory;
                 mMainClassName = mainClassName;
@@ -83,6 +89,8 @@ public abstract class LauncherCreator {
                 mTransitiveArtifacts = transitiveArtifacts;
                 mResourceDirectories = resourceDirectories;
                 mParameterProperties = parameterProperties;
+                mSystemProperties = systemProperties;
+                mVmArguments = vmArguments;
     }
 
     /**
@@ -139,6 +147,20 @@ public abstract class LauncherCreator {
      */
     protected final Properties getParameterProperties() {
         return mParameterProperties;
+    }
+
+    /**
+     * @return the array of system properties name=value pair strings
+     */
+    protected final String[] getSystemProperties() {
+        return mSystemProperties;
+    }
+
+    /**
+     * @return the array of VM arguments
+     */
+    protected final String[] getVmArguments() {
+        return mVmArguments;
     }
 
     /**
