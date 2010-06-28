@@ -148,9 +148,13 @@ public final class CreateLauncherMojo extends AbstractMojo {
     /**
      * Mac OS X only: The bundle signature.
      * This is registered in the Mac OS X Info.plist as CFBundleSignature, and
-     * in the PkgInfo as APPL${xplp.bundlesignature}.
+     * in the PkgInfo as APPL${xplp.bundlesignature}. As stated at
+     * http://developer.apple.com/mac/library/documentation/Java/Conceptual/Java14Development/03-JavaDeployment/JavaDeployment.html
+     * "This is a simple text file that contains the string APPL optionally
+     * concatenated with a four letter creator code. If an application does not
+     * have a registered creator code, the string APPL???? should be used."
      * 
-     * @parameter expression="${xplp.bundlesignature}"
+     * @parameter expression="${xplp.bundlesignature}" default-value="????"
      */
     private String bundleSignature;
     
