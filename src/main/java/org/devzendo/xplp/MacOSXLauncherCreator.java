@@ -38,6 +38,7 @@ import org.apache.maven.plugin.AbstractMojo;
  *
  */
 public final class MacOSXLauncherCreator extends LauncherCreator {
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private final String mFileType;
     private final String mIconsFileName;
     private final String mBundleSignature;
@@ -106,6 +107,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     @Override
     public void createLauncher() throws IOException {
         validate();
+        setSystemPropertiesAsParameterProperty();
         setTransitiveArtifactsAsParameterProperty();
         getMojo().getLog().info("Icons file name:   " + mIconsFileName);
         getMojo().getLog().info("File type:         " + mFileType);
@@ -145,8 +147,31 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         copyTransitiveArtifacts(libDir);
     }
 
+    private void setSystemPropertiesAsParameterProperty() {
+        final StringBuilder propsAsDictEntries = new StringBuilder();
+        final String[] systemProperties = getSystemProperties();
+        for (int i = 0; i < systemProperties.length; i++) {
+            final String prop = systemProperties[i];
+            appendSystemProperty(propsAsDictEntries, prop);
+            propsAsDictEntries.append(LINE_SEPARATOR);
+        }
+        getParameterProperties().put("xplp.macosxsystemproperties", propsAsDictEntries.toString());
+    }
+
+    private void appendSystemProperty(
+            final StringBuilder propsAsDictEntries,
+            final String prop) {
+        final String[] split = prop.split("\\s*=\\s*");
+        propsAsDictEntries.append("            <key>");
+        propsAsDictEntries.append(split[0]);
+        propsAsDictEntries.append("</key>");
+        propsAsDictEntries.append(LINE_SEPARATOR);
+        propsAsDictEntries.append("            <string>");
+        propsAsDictEntries.append(split[1]);
+        propsAsDictEntries.append("</string>");
+    }
+
     private void setTransitiveArtifactsAsParameterProperty() {
-        final String lineSeparator = System.getProperty("line.separator");
         final StringBuilder libsAsArtifacts = new StringBuilder();
         for (final Artifact transitiveArtifact : getTransitiveArtifacts()) {
             if (transitiveArtifact.getScope().equals("compile")
@@ -154,7 +179,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
                 libsAsArtifacts.append("            <string>$JAVAROOT/lib/");
                 libsAsArtifacts.append(transitiveArtifact.getFile().getName());
                 libsAsArtifacts.append("</string>");
-                libsAsArtifacts.append(lineSeparator);
+                libsAsArtifacts.append(LINE_SEPARATOR);
             }
         }
         getParameterProperties().put("xplp.macosxclasspatharray", libsAsArtifacts.toString());

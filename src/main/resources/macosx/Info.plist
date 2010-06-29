@@ -66,7 +66,7 @@
             <string>true</string>
             <key>apple.awt.showGrowBox</key>
             <string>true</string>
-        </dict>
+${xplp.macosxsystemproperties}        </dict>
     </dict>
 </dict>
 </plist>
