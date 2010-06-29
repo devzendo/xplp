@@ -3,15 +3,102 @@ Frequently Asked Questions
  (Or things that will be changed/fixed as it moves out of SNAPSHOT status)
  
 * General
-  * Why is the plugin implementing its own property interpolation?
-    It was easy to implement, I already had similar code. I might change it
+
+  * Q. Why is the plugin implementing its own property interpolation?
+  
+  * A. It was easy to implement, I already had similar code. I might change it
     to use any Maven API for this later.
-  * I need to set custom VM parameters such as min/max heap size. How is this done?
-    It can't be done, yet.
-      
+
+  
+    
+  * Q. I need to set custom VM parameters such as min/max heap size. How is this done?
+  
+  * A. It can't be done, yet.
+    
+  
+  
+  * Q. How can I define some launcher properties in a parent pom, and merge them
+    into the platform-specific launcher, along with some platform-specific
+    properties?
+  
+  * A.  Define the common properties in a pluginManagement section in the parent
+    pom, and in the child pom, use the combine.children="append" attribute.
+    
+    See {{http://docs.codehaus.org/display/MAVENUSER/FAQs-1#FAQs-1-HowdoImergealistofconfigurationitemsinaparentPOMwiththoseinachildPOM%3F}here}}
+    for details; you must be using Maven 2.0.8 or greater.
+    
+    e.g. parent pom:
+    
++----       
+    <build>
+      <pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.devzendo</groupId>
+            <artifactId>CrossPlatformLauncherPlugin</artifactId>
+            <executions>
+              <execution>
+                <id>createlauncher</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>createlauncher</goal>
+                </goals>
+                <configuration>
+                  <systemProperties>
+                    <param>commonProperty=xyz</param>
+                    <param>anotherCommonProperty=abc</param>
+                  </systemProperties>
+                  <vmArguments>
+                    <param>-Xmx1024</param>
+                  </vmArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </pluginManagement>
+    </build>
++----
+
+    And in the child pom:
+    
++----
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.devzendo</groupId>
+          <artifactId>CrossPlatformLauncherPlugin</artifactId>
+          <configuration>
+            <os>MacOSX</os>
+            <applicationName>BeanMinder</applicationName>
+            <mainClassName>org.devzendo.minimiser.MiniMiser</mainClassName>
+            <iconsFileName>BeanMinder.icns</iconsFileName>
+            <systemProperties combine.children="append">
+              <param>myMacOsXProperty=foo</param>
+              <param>anotherMacOsXProperty=bar</param>
+            </systemProperties>
+            <vmArguments combine.children="append">
+              <param>-Xcheck:jni</param> <!-- debug JNI on Mac OS X -->
+            </vmArguments>
+          </configuration>
+          <executions>
+            <execution>
+              <id>createlauncher</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>createlauncher</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        ...
++----
+
 * Windows-specific
-  * Why can't I add custom lines into the .lap file that's generated?
-    Just haven't implement that yet. It's high on the list.
+
+  * Q. Why can't I add custom lines into the .lap file that's generated?
+  
+  * A. Just haven't implement that yet. It's high on the list.
     
 * Mac OS X-specific
 
