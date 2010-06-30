@@ -113,7 +113,9 @@ public final class CreateLauncherMojo extends AbstractMojo {
     
     /**
      * A list of system properties, to be passed to the JVM via multiple
-     * -Dxxx=yyy parameters.
+     * -Dxxx=yyy parameters. When specifying system properties, omit the -D, and
+     * just give them as xxx=yyy. The platform-specific launcher will add in the
+     * -D if necessary.
      *
      * @parameter expression="${xplp.systemproperty}"
      */
@@ -121,7 +123,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
     
     /**
      * A list of VM arguments, to be passed straight to the JVM, e.g. -Xmx2048.
-     * Note that on Mac OS X, your application shoudl set -Xdock:name=MyApplication
+     * Note that on Mac OS X, your application should set -Xdock:name=MyApplication
      * to have the correct name in the application menu and on the dock.
      *
      * @parameter expression="${xplp.systemproperty}"
