@@ -32,6 +32,7 @@ import org.junit.Test;
  *
  */
 public final class TestPropertiesInterpolation {
+    private final String lineSeparator = System.getProperty("line.separator");
     private Properties mProps;
     private PropertiesInterpolator mInterpolator;
     private String mLibsString;
@@ -44,8 +45,8 @@ public final class TestPropertiesInterpolation {
         mProps = new Properties();
         mProps.put("key", "value");
         mProps.put("long.key.name", "long value");
+        mProps.put("return", "line1" + lineSeparator + "line2");
         
-        final String lineSeparator = System.getProperty("line.separator");
         final StringBuilder sb = new StringBuilder();
         sb.append("            <string>$JAVAROOT/lib/BeanCounter-0.1.0-SNAPSHOT.jar</string>" + lineSeparator);
         sb.append("            <string>$JAVAROOT/lib/MiniMiser-0.1.0-SNAPSHOT.jar</string>" + lineSeparator);
@@ -106,7 +107,16 @@ public final class TestPropertiesInterpolation {
         Assert.assertEquals("valuelong valuelong value",
             mInterpolator.interpolate("${key}${long.key.name}${long.key.name}"));
     }
-    
+
+    /**
+     * 
+     */
+    @Test
+    public void replaceMultipleOccurrencesMultipleKeysRightNextToEachOtherIncludingNewlines() {
+        Assert.assertEquals("valueline1" + lineSeparator + "line2long value",
+            mInterpolator.interpolate("${key}${return}${long.key.name}"));
+    }
+
     /**
      * 
      */

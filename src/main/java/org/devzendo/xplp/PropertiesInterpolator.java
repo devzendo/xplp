@@ -31,11 +31,9 @@ import java.util.regex.Pattern;
  *
  */
 public final class PropertiesInterpolator {
-
     private final Properties mProps;
     private final Matcher variableReferenceMatcher = 
-        Pattern.compile("^(.*?)\\$\\{([^}]+?)\\}(.*?)$").matcher("");
-
+        Pattern.compile("^(.*?)\\$\\{([^}]+?)\\}(.*?)$", Pattern.DOTALL).matcher("");
 
     /**
      * Create an interpolator, given a set of properties to
@@ -62,6 +60,7 @@ public final class PropertiesInterpolator {
         }
         String s = input;
         while (true) {
+            //System.out.println("Finding variables in '" + s + "'");
             variableReferenceMatcher.reset(s);
             if (variableReferenceMatcher.find()) {
                 //System.out.println("Found variable");
@@ -78,9 +77,11 @@ public final class PropertiesInterpolator {
                     throw new IllegalStateException("The name '" + variableName + "' is not defined");
                 }
             } else {
+                //System.out.println("No more variables");
                 break;
             }
         }
+        //System.out.println("Output is '" + s + "'");
         return s;
     }
 }
