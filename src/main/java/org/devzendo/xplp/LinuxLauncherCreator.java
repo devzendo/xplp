@@ -21,6 +21,9 @@ package org.devzendo.xplp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -78,10 +81,32 @@ public class LinuxLauncherCreator extends LauncherCreator {
             throw new IOException("Could not create required directories under " + getOutputDirectory().getAbsolutePath());
         }
         
+        final List<String> jvmArgs = new ArrayList<String>();
+        jvmArgs.addAll(systemPropertiesAsJVMArgs(getSystemProperties()));
+        jvmArgs.addAll(vmArgumentsAsJVMArgs(getVmArguments()));
+        final StringBuilder jvmArgsString = new StringBuilder();
+        for (final String jvmArg : jvmArgs) {
+            jvmArgsString.append(jvmArg);
+            jvmArgsString.append(' '); // a space at the end is needed
+        }
+        getParameterProperties().put("xplp.linuxjvmargs", jvmArgsString.toString());
+
         final File outputRunScript = new File(binDir, getApplicationName());
         copyInterpolatedPluginResource("linux/launcher.sh", outputRunScript);
         makeExecutable(outputRunScript);
         
         copyTransitiveArtifacts(libDir);
+    }
+
+    private List<String> vmArgumentsAsJVMArgs(final String[] vmArguments) {
+        return Arrays.asList(vmArguments);
+    }
+
+    private List<String> systemPropertiesAsJVMArgs(final String[] systemProperties) {
+        final List<String> addDList = new ArrayList<String>();
+        for (final String sysProp : systemProperties) {
+            addDList.add("-D" + sysProp);
+        }
+        return addDList;
     }
 }

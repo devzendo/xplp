@@ -24,5 +24,5 @@ if [ -x /bin/bash ]
 then
 	sh=/bin/bash
 fi
-eval exec $sh java -cp $progdir/lib ${xplp.mainclassname}
+eval exec $sh java ${xplp.linuxjvmargs}-cp $progdir/lib ${xplp.mainclassname}
 exit 1
