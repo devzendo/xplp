@@ -97,6 +97,15 @@ public final class TestPropertiesInterpolation {
         Assert.assertEquals("check value test long value foo long value",
             mInterpolator.interpolate("check ${key} test ${long.key.name} foo ${long.key.name}"));
     }
+
+    /**
+     * 
+     */
+    @Test
+    public void replaceMultipleOccurrencesMultipleKeysRightNextToEachOther() {
+        Assert.assertEquals("valuelong valuelong value",
+            mInterpolator.interpolate("${key}${long.key.name}${long.key.name}"));
+    }
     
     /**
      * 
