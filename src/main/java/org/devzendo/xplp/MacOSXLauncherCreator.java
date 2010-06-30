@@ -107,8 +107,9 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     @Override
     public void createLauncher() throws IOException {
         validate();
-        setSystemPropertiesAsParameterProperty();
-        setTransitiveArtifactsAsParameterProperty();
+        getParameterProperties().put("xplp.macosxsystemproperties", systemPropertiesAsPlistDict(getSystemProperties()));
+        getParameterProperties().put("xplp.macosxvmoptionsarray", vmArgumentsAsPlistArray(getVmArguments()));
+        getParameterProperties().put("xplp.macosxclasspatharray", transitiveArtifactsAsPlistArray(getTransitiveArtifacts()));
         getMojo().getLog().info("Icons file name:   " + mIconsFileName);
         getMojo().getLog().info("File type:         " + mFileType);
         getMojo().getLog().info("Bundle signature:  " + mBundleSignature);
@@ -147,15 +148,33 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         copyTransitiveArtifacts(libDir);
     }
 
-    private void setSystemPropertiesAsParameterProperty() {
+    private String vmArgumentsAsPlistArray(final String[] vmArguments) {
+        final StringBuilder argsAsArray = new StringBuilder();
+        if (vmArguments.length > 0) {
+            argsAsArray.append("        <key>VMOptions</key>");
+            argsAsArray.append(LINE_SEPARATOR);
+            argsAsArray.append("        <array>");
+            argsAsArray.append(LINE_SEPARATOR);
+            for (final String vmArg : vmArguments) {
+                argsAsArray.append("           <string>");
+                argsAsArray.append(vmArg);
+                argsAsArray.append("</string>");
+                argsAsArray.append(LINE_SEPARATOR);
+            }
+            argsAsArray.append("        </array>");
+            argsAsArray.append(LINE_SEPARATOR);
+        }
+        return argsAsArray.toString();
+    }
+
+    private String systemPropertiesAsPlistDict(final String[] systemProperties) {
         final StringBuilder propsAsDictEntries = new StringBuilder();
-        final String[] systemProperties = getSystemProperties();
         for (int i = 0; i < systemProperties.length; i++) {
             final String prop = systemProperties[i];
             appendSystemProperty(propsAsDictEntries, prop);
             propsAsDictEntries.append(LINE_SEPARATOR);
         }
-        getParameterProperties().put("xplp.macosxsystemproperties", propsAsDictEntries.toString());
+        return propsAsDictEntries.toString();
     }
 
     private void appendSystemProperty(
@@ -171,9 +190,9 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         propsAsDictEntries.append("</string>");
     }
 
-    private void setTransitiveArtifactsAsParameterProperty() {
+    private String transitiveArtifactsAsPlistArray(final Set<Artifact> transitiveArtifacts) {
         final StringBuilder libsAsArtifacts = new StringBuilder();
-        for (final Artifact transitiveArtifact : getTransitiveArtifacts()) {
+        for (final Artifact transitiveArtifact : transitiveArtifacts) {
             if (transitiveArtifact.getScope().equals("compile")
                     && transitiveArtifact.getType().equals("jar")) {
                 libsAsArtifacts.append("            <string>$JAVAROOT/lib/");
@@ -182,6 +201,6 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
                 libsAsArtifacts.append(LINE_SEPARATOR);
             }
         }
-        getParameterProperties().put("xplp.macosxclasspatharray", libsAsArtifacts.toString());
+        return libsAsArtifacts.toString();
     }
 }

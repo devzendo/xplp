@@ -48,9 +48,9 @@
         <string>1.4+</string>
         <key>ClassPath</key>
         <array>
- ${xplp.macosxclasspatharray}
+${xplp.macosxclasspatharray}
         </array>
-        <key>Properties</key>
+${xplp.macosxvmoptionsarray}        <key>Properties</key>
         <dict>
             <key>com.apple.mrj.application.apple.menu.about.name</key>
             <string>${xplp.applicationname}</string>
