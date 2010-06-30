@@ -33,6 +33,7 @@ import org.apache.maven.plugin.AbstractMojo;
  *
  */
 public class WindowsLauncherCreator extends LauncherCreator {
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final String MSVCR71_DLL = "msvcr71.dll";
     private final String mJanelType;
 
@@ -86,6 +87,9 @@ public class WindowsLauncherCreator extends LauncherCreator {
     @Override
     public void createLauncher() throws IOException {
         validate();
+        getParameterProperties().put("xplp.windowssystemproperties", systemPropertiesAsJanelLines(getSystemProperties()));
+        getParameterProperties().put("xplp.windowsvmarguments", vmArgumentsAsJanelLines(getVmArguments()));
+
         getMojo().getLog().info("Janel .EXE type:   " + mJanelType);
         
         final File osOutputDir = new File(getOutputDirectory(), "windows");
@@ -106,5 +110,28 @@ public class WindowsLauncherCreator extends LauncherCreator {
         copyInterpolatedPluginResource("windows/launcher.lap", new File(osOutputDir, getApplicationName() + ".lap"));
 
         copyTransitiveArtifacts(libDir);
+    }
+
+    private String vmArgumentsAsJanelLines(final String[] vmArguments) {
+        final StringBuilder vmArgLines = new StringBuilder();
+        if (vmArguments.length > 0) {
+            for (final String vmArg : vmArguments) {
+                vmArgLines.append(vmArg);
+                vmArgLines.append(LINE_SEPARATOR);
+            }
+        }
+        return vmArgLines.toString();
+    }
+
+    private String systemPropertiesAsJanelLines(final String[] systemProperties) {
+        final StringBuilder sysPropLines = new StringBuilder();
+        if (systemProperties.length > 0) {
+            for (final String sysProp : systemProperties) {
+                sysPropLines.append("-D");
+                sysPropLines.append(sysProp);
+                sysPropLines.append(LINE_SEPARATOR);
+            }
+        }
+        return sysPropLines.toString();
     }
 }
