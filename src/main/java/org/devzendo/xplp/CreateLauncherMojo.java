@@ -186,6 +186,13 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String janelType;
     
     /**
+     * A list of lines of text that will be added to the Janel launcher file.
+     *
+     * @parameter expression="${xplp.janelcustomlines}"
+     */
+    private String[] janelCustomLines;
+    
+    /**
      * {@inheritDoc}
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -213,10 +220,12 @@ public final class CreateLauncherMojo extends AbstractMojo {
                 parameterProperties, systemProperties, vmArguments,
                 fileType, iconsFileName, bundleSignature, bundleOsType, bundleTypeName);
         } else if (os.equals("Windows")) {
+            getLog().info("Janel custom lines:" + dumpArray(janelCustomLines));
             launcherCreator = new WindowsLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
-                resourceDirectories, parameterProperties, systemProperties, vmArguments, janelType);
+                resourceDirectories, parameterProperties, systemProperties,
+                vmArguments, janelType, janelCustomLines);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,

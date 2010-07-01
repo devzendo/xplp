@@ -36,6 +36,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final String MSVCR71_DLL = "msvcr71.dll";
     private final String mJanelType;
+    private final String[] mJanelCustomLines;
 
     /**
      * @param mojo the parent mojo class
@@ -49,6 +50,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
      * @param janelType the launcher type, Console or GUI.
+     * @param janelCustomLines an array of extra lines to be added to the launcher file
      */
     public WindowsLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -60,12 +62,14 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final Properties parameterProperties,
             final String[] systemProperties, 
             final String[] vmArguments, 
-            final String janelType) {
+            final String janelType,
+            final String[] janelCustomLines) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
             parameterProperties, systemProperties, vmArguments);
         mJanelType = janelType;
+        mJanelCustomLines = janelCustomLines;
     }
     
     private void validate() {
@@ -88,7 +92,8 @@ public class WindowsLauncherCreator extends LauncherCreator {
     public void createLauncher() throws IOException {
         validate();
         getParameterProperties().put("xplp.windowssystemproperties", systemPropertiesAsJanelLines(getSystemProperties()));
-        getParameterProperties().put("xplp.windowsvmarguments", vmArgumentsAsJanelLines(getVmArguments()));
+        getParameterProperties().put("xplp.windowsvmarguments", stringsToSeparatedJanelLines(getVmArguments()));
+        getParameterProperties().put("xplp.janelcustomlines", stringsToSeparatedJanelLines(mJanelCustomLines));
 
         getMojo().getLog().info("Janel .EXE type:   " + mJanelType);
         
@@ -112,15 +117,15 @@ public class WindowsLauncherCreator extends LauncherCreator {
         copyTransitiveArtifacts(libDir);
     }
 
-    private String vmArgumentsAsJanelLines(final String[] vmArguments) {
-        final StringBuilder vmArgLines = new StringBuilder();
-        if (vmArguments.length > 0) {
-            for (final String vmArg : vmArguments) {
-                vmArgLines.append(vmArg);
-                vmArgLines.append(LINE_SEPARATOR);
+    private String stringsToSeparatedJanelLines(final String[] strings) {
+        final StringBuilder stringLines = new StringBuilder();
+        if (strings.length > 0) {
+            for (final String string : strings) {
+                stringLines.append(string);
+                stringLines.append(LINE_SEPARATOR);
             }
         }
-        return vmArgLines.toString();
+        return stringLines.toString();
     }
 
     private String systemPropertiesAsJanelLines(final String[] systemProperties) {

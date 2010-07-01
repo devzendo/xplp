@@ -7,15 +7,52 @@ Frequently Asked Questions
   * Q. Why is the plugin implementing its own property interpolation?
   
   * A. It was easy to implement, I already had similar code. I might change it
-    to use any Maven API for this later.
+    to use the relevant Maven API for this later.
 
-  
+
+  * Q. I need to pass certain system properties to the JVM, using -Dxxx=yyy.
+       How is this done?
+       
+  * A. Use the <systemProperties section of your configuration - see the answer
+       below.  
     
   * Q. I need to set custom VM parameters such as min/max heap size. How is this done?
   
-  * A. It can't be done, yet.
-    
+  * A. On Windows, some of these can be set in the Janel launcher file - see the
+       Windows-specific section below. Generally, use the <vmArguments> section
+       of your configuration, like this:
   
++----
+      <plugin>
+        <groupId>org.devzendo</groupId>
+        <artifactId>CrossPlatformLauncherPlugin</artifactId>
+        <configuration>
+          <os>Windows</os>
+          <applicationName>BeanMinder</applicationName>
+          <mainClassName>org.devzendo.minimiser.MiniMiser</mainClassName>
+          <systemProperties>
+            <param>myWindowsProperty=foo</param> <!-- like -DmyWindowsProperty=foo -->
+            <param>anotherWindowsProperty=bar</param>
+          </systemProperties>
+          <vmArguments>
+             <param>-Xcheck:jni</param> <!-- passed straight through to the JVM -->
+             <param>-enableassertions</param>
+             <param>-verbose:jni</param>
+          </vmArguments>
+        </configuration>
+        <executions>
+          <execution>
+            <id>createlauncher</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>createlauncher</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
++----
+      
   
   * Q. How can I define some launcher properties in a parent pom, and merge them
     into the platform-specific launcher, along with some platform-specific
@@ -96,9 +133,28 @@ Frequently Asked Questions
 
 * Windows-specific
 
-  * Q. Why can't I add custom lines into the .lap file that's generated?
+  * Q. My application always displays a Command Prompt window before showing
+       its GUI. How can I stop this?
   
-  * A. Just haven't implement that yet. It's high on the list.
+  * A. The Janel launcher can be used for launching Console apps, and GUIs.
+       You need to choose the correct one. The default is GUI, so presumably
+       you have set it to Console. Place one of these in your configuration:
+       
++----
+          <janelType>Console</janelType> <!-- or -->
+          <janelType>GUI</janelType>
++----
+       
+  * Q. How can I set custom Janel settings?
+  
+  * A. Use the <janelCustomLines> array, like this:
+  
++----
+          <janelCustomLines>
+            <param>janel.min.java.version=1.4</param>
+            <param>janel.max.java.version=1.5</param>
+          </janelCustomLines>
++----
     
 * Mac OS X-specific
 
