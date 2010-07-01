@@ -36,9 +36,9 @@ Cross Platform Launcher Plugin
 
   In order to run a Java application, the JVM must be loaded with the correct
   configuration, namely, the main class, the classpath libraries, any system
-  properties and VM properties.
+  properties and VM arguments.
   
-  Different platforms (Mac OS X, Windows and Linux) offer different mechanisms
+  The platforms supported by this plugin (Mac OS X, Windows and Linux) offer different mechanisms
   for achieving this. This plugin integrates these mechanisms, to allow launchers to
   be generated for all three platforms given some common configuration and
   some platform-specific configuration. 
@@ -49,10 +49,10 @@ Cross Platform Launcher Plugin
   with libraries, configuration and icon in the correct place. Apple provide
   a tool to assist with this, but it's not easily invokable from Maven. There
   are other plugins that can achieve the same ends. See
-  {{http://mojo.codehaus.org/osxappbundle-maven-plugin/}OSX App Bundle}} for one such plugin.
+  {{{http://mojo.codehaus.org/osxappbundle-maven-plugin/}OSX App Bundle}} for one such plugin.
   
   On Mac OS X, a popular addition to Java projects is the Quaqua look and feel
-  library. See {{http://www.randelshofer.ch/quaqua/}the Quaqua home page}} for details.
+  library. See {{{http://www.randelshofer.ch/quaqua/}the Quaqua home page}} for details.
   Using this requires the addition of native libraries. The Maven
   dependency plugin can be used to extract these libraries from your local
   Maven repository into the correct location in your .app launcher structure.
@@ -62,7 +62,7 @@ Cross Platform Launcher Plugin
   The JVM must be loaded by some process. It is possible to do this
   from a .cmd file, but running the .cmd file leaves an unsightly command
   prompt window on screen. The Janel open source launcher can alleviate this.
-  See {{http://www.redskaper.com}the Janel home page}} for details of Janel.
+  See {{{http://www.redskaper.com}the Janel home page}} for details of Janel.
   This plugin contains the Janel console and windows .EXE files, and will copy
   the relevant one into your launcher structure.
 

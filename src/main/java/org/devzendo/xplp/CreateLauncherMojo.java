@@ -96,7 +96,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * 
      * On Mac OS X, this is used to name the application menu.
      * On Windows, this is used to name the Janel .exe/.lap files.
-     * By default, take the client project's artifact id.
+     * If not specified the client project's artifact id will be used.
      * 
      * @required
      * @parameter expression="${xplp.applicationname}"
@@ -148,10 +148,13 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String iconsFileName;
     
     /**
-     * Mac OS X only: The bundle signature.
+     * Mac OS X only: The bundle signature. Only use this if you have a registered
+     * creator code.
      * This is registered in the Mac OS X Info.plist as CFBundleSignature, and
-     * in the PkgInfo as APPL${xplp.bundlesignature}. As stated at
-     * http://developer.apple.com/mac/library/documentation/Java/Conceptual/Java14Development/03-JavaDeployment/JavaDeployment.html
+     * in the PkgInfo prefixed with APPL
+     * </p>
+     * As stated at <a href="http://developer.apple.com/mac/library/documentation/Java/Conceptual/Java14Development/03-JavaDeployment/JavaDeployment.html">
+     * the Apple developer website</a> 
      * "This is a simple text file that contains the string APPL optionally
      * concatenated with a four letter creator code. If an application does not
      * have a registered creator code, the string APPL???? should be used."
@@ -186,7 +189,8 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String janelType;
     
     /**
-     * A list of lines of text that will be added to the Janel launcher file.
+     * Windows only: A list of lines of text that will be added to the Janel
+     * launcher file.
      *
      * @parameter expression="${xplp.janelcustomlines}"
      */

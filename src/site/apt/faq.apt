@@ -13,13 +13,13 @@ Frequently Asked Questions
   * Q. I need to pass certain system properties to the JVM, using -Dxxx=yyy.
        How is this done?
        
-  * A. Use the <systemProperties section of your configuration - see the answer
+  * A. Use the \<systemProperties\> section of your configuration - see the answer
        below.  
     
   * Q. I need to set custom VM parameters such as min/max heap size. How is this done?
   
   * A. On Windows, some of these can be set in the Janel launcher file - see the
-       Windows-specific section below. Generally, use the <vmArguments> section
+       Windows-specific section below. Generally, use the \<vmArguments\> section
        of your configuration, like this:
   
 +----
@@ -61,8 +61,8 @@ Frequently Asked Questions
   * A.  Define the common properties in a pluginManagement section in the parent
     pom, and in the child pom, use the combine.children="append" attribute.
     
-    See {{http://docs.codehaus.org/display/MAVENUSER/FAQs-1#FAQs-1-HowdoImergealistofconfigurationitemsinaparentPOMwiththoseinachildPOM%3F}here}}
-    for details; you must be using Maven 2.0.8 or greater.
+    See {{{http://docs.codehaus.org/display/MAVENUSER/FAQs-1#FAQs-1-HowdoImergealistofconfigurationitemsinaparentPOMwiththoseinachildPOM%3F}here}} for 
+    details; you must be using Maven 2.0.8 or greater.
     
     e.g. parent pom:
     
@@ -147,7 +147,7 @@ Frequently Asked Questions
        
   * Q. How can I set custom Janel settings?
   
-  * A. Use the <janelCustomLines> array, like this:
+  * A. Use the \<janelCustomLines\> array, like this:
   
 +----
           <janelCustomLines>
@@ -155,7 +155,88 @@ Frequently Asked Questions
             <param>janel.max.java.version=1.5</param>
           </janelCustomLines>
 +----
-    
+
+  * Q. How can I customise the .exe's icon?
+  
+  * A. You can't, currently. You'd have to build the Janel launcher from its own source,
+       replacing its icon, or use some resource compiler/editor. I might look at
+       munging the binary, if it's an easy replacement.
+         
 * Mac OS X-specific
 
+  * Q. My app doesn't show the correct name in its menu (next to the Apple menu).
+  
+  * A. You need to set the application name, as in this fragment:
+  
++----
+        <configuration>
+          <os>MacOSX</os>
+          <applicationName>BeanMinder</applicationName>
+          <mainClassName>org.devzendo.minimiser.MiniMiser</mainClassName>
+          <iconsFileName>BeanMinder.icns</iconsFileName>
++----
+
+  * Q. How can I add the Quaqua look and feel's native libraries into my launcher?
+  
+  * A. You need to add a dependency on them (they're available from 
+       {{{http://www.devzendo.org/content/maven-2-repositories}the DevZendo.org Maven 2 Repositories}}),
+       and extract them into the correct place in your launcher .app directory structure
+       using the Maven dependency plugin:
+       
++----
+  <dependencies>
+    ...
+    <dependency> <!-- Not released in central -->
+      <groupId>ch.randelshofer</groupId>
+      <artifactId>libquaqua</artifactId>
+      <type>zip</type>
+      <version>6.5</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <!-- Create the Mac OS X BeanMinder.app launcher structure under 
+           target/macosx. -->
+      ...
+      <!-- Copy the Quaqua native libraries into the correct location in
+           the Mac OS X launcher structure created above. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>package</phase>
+            <goals>
+                <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>ch.randelshofer</groupId>
+                  <artifactId>libquaqua</artifactId>
+                  <version>6.5</version>
+                  <type>zip</type>
+                  <overWrite>true</overWrite>
+                  <includes>*</includes>
+                  <outputDirectory>${project.build.directory}/macosx/BeanMinder.app/Contents/Resources/Java/lib</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <!-- other configurations here -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Package up the above .app structure into a .tar.gz archive  -->
+      ...
+    </plugins>
+  </build>
+
++----
+ 
 * Linux specific
+
+  * Nothing of note, as yet.
+  
