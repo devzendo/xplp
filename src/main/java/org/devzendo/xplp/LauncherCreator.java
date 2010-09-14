@@ -175,7 +175,7 @@ public abstract class LauncherCreator {
      * @param destinationFile the file to write it to
      * @throws IOException on write failure
      */
-    protected void copyPluginResource(final String resourceName, final File destinationFile) throws IOException {
+    protected final void copyPluginResource(final String resourceName, final File destinationFile) throws IOException {
         final InputStream resourceAsStream = getPluginResourceAsStream(resourceName);
         if (resourceAsStream == null) {
             final String message = "Could not open resource " + resourceName;
@@ -195,7 +195,7 @@ public abstract class LauncherCreator {
      * @param destinationFile the file to write it to
      * @throws IOException on write failure
      */
-    protected void copyProjectResource(final String resourceName, final File destinationFile) throws IOException {
+    protected final void copyProjectResource(final String resourceName, final File destinationFile) throws IOException {
         final InputStream resourceAsStream = getProjectResourceAsStream(resourceName);
         final OutputStream outputStream = createFileOutputStream(destinationFile);
         final long bytesCopied = copyStream(resourceName, destinationFile.getAbsolutePath(),
@@ -240,7 +240,7 @@ public abstract class LauncherCreator {
      * must exist
      * @throws IOException on copy failure
      */
-    protected void copyFile(final File sourceFile, final File destinationDirectory) throws IOException {
+    protected final void copyFile(final File sourceFile, final File destinationDirectory) throws IOException {
         final String destinationFileName = sourceFile.getName();
         copyFileWithRename(sourceFile, destinationDirectory,
             destinationFileName);
@@ -313,7 +313,7 @@ public abstract class LauncherCreator {
      * must exist
      * @throws IOException on copy failure
      */
-    protected void copyTransitiveArtifacts(final File destinationDirectory) throws IOException {
+    protected final void copyTransitiveArtifacts(final File destinationDirectory) throws IOException {
         getMojo().getLog().info("Copying transitive artifacts");
         final Set<Artifact> transitiveArtifacts = getTransitiveArtifacts();
         getMojo().getLog().info("There are " + transitiveArtifacts.size() + " transitive artifacts");
@@ -329,26 +329,33 @@ public abstract class LauncherCreator {
     private void copyTransitiveArtifact(
             final File destinationDirectory,
             final Artifact artifact) throws IOException {
-        if (artifact.getType().equals("jar") || artifact.getType().equals("nar")) {
-            getMojo().getLog().info("Copying transitive artifact " + artifact);
-            final File artifactFile = artifact.getFile();
-            if (artifactFile.exists() && artifactFile.isFile()) {
-                if (artifact.getType().equals("nar")) {
-                    final String destinationJarFileName = artifactFile.getName().replace(".nar", ".jar");
-                    copyFileWithRename(artifactFile, destinationDirectory, destinationJarFileName);
-                    if (artifact.hasClassifier()) {
-                        getMojo().getLog().info(artifact + " has a classifier: " + artifact.getClassifier()); 
-                    }
-                } else {
-                    copyFile(artifactFile, destinationDirectory);
-                }
+        if (!(artifact.getType().equals("jar") || artifact.getType().equals("nar"))) {
+            getMojo().getLog().info("Not copying transitive artifact " + artifact + " since it is not a jar or nar artifact");
+            return;
+        }
+        
+        getMojo().getLog().info("Copying transitive artifact " + artifact);
+        final File artifactFile = artifact.getFile();
+        if (artifactFile.exists() && artifactFile.isFile()) {
+            if (artifact.getType().equals("nar")) {
+                copyTransitiveNarArtifact(artifact, destinationDirectory);
             } else {
-                getMojo().getLog().warn("Not copying transitive artifact " + artifact + " since it either doesn't exist or is not a file");
-                getMojo().getLog().info("(Perhaps you're running this from an IDE, and this artifact is resolved as a project in your");
-                getMojo().getLog().info(" workspace and therefore on your classpath by the IDE?)");
+                copyFile(artifactFile, destinationDirectory);
             }
         } else {
-            getMojo().getLog().info("Not copying transitive artifact " + artifact + " since it is not a jar or nar artifact");
+            getMojo().getLog().warn("Not copying transitive artifact " + artifact + " since it either doesn't exist or is not a file");
+            getMojo().getLog().info("(Perhaps you're running this from an IDE, and this artifact is resolved as a project in your");
+            getMojo().getLog().info(" workspace and therefore on your classpath by the IDE?)");
+        }
+    }
+
+    private void copyTransitiveNarArtifact(
+            final Artifact artifact, final File destinationDirectory) throws IOException {
+        final File artifactFile = artifact.getFile();
+        final String destinationJarFileName = artifactFile.getName().replace(".nar", ".jar");
+        copyFileWithRename(artifactFile, destinationDirectory, destinationJarFileName);
+        if (artifact.hasClassifier()) {
+            getMojo().getLog().info(artifact + " has a classifier: " + artifact.getClassifier()); 
         }
     }
 
@@ -358,7 +365,7 @@ public abstract class LauncherCreator {
      * @param outputFile the file to write it to
      * @throws IOException on write failure
      */
-    protected void copyInterpolatedProjectResource(final String resourceName, final File outputFile) throws IOException {
+    protected final void copyInterpolatedProjectResource(final String resourceName, final File outputFile) throws IOException {
         final BufferedReader br = new BufferedReader(new InputStreamReader(getProjectResourceAsStream(resourceName)));
         copyInterpolatedResource(resourceName, outputFile, br);
     }
@@ -369,7 +376,7 @@ public abstract class LauncherCreator {
      * @param outputFile the file to write it to
      * @throws IOException on write failure
      */
-    protected void copyInterpolatedPluginResource(final String resourceName, final File outputFile) throws IOException {
+    protected final void copyInterpolatedPluginResource(final String resourceName, final File outputFile) throws IOException {
         final BufferedReader br = new BufferedReader(new InputStreamReader(getPluginResourceAsStream(resourceName)));
         copyInterpolatedResource(resourceName, outputFile, br);
     }
@@ -438,7 +445,7 @@ public abstract class LauncherCreator {
      * Make a file executable, in the terms of the specific platform.
      * @param nonExecutableFile some file that may not currently be executable
      */
-    protected void makeExecutable(final File nonExecutableFile) {
+    protected final void makeExecutable(final File nonExecutableFile) {
         getMojo().getLog().info("Making " + nonExecutableFile + " executable");
         final Commandline cl = new  Commandline("chmod");
         cl.addArguments(new String [] {"a+x" , nonExecutableFile.getAbsolutePath()}); 
