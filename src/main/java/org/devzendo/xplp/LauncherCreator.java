@@ -241,6 +241,15 @@ public abstract class LauncherCreator {
      * @throws IOException on copy failure
      */
     protected void copyFile(final File sourceFile, final File destinationDirectory) throws IOException {
+        final String destinationFileName = sourceFile.getName();
+        copyFileWithRename(sourceFile, destinationDirectory,
+            destinationFileName);
+    }
+
+    private void copyFileWithRename(
+            final File sourceFile,
+            final File destinationDirectory,
+            final String destinationFileName) throws IOException {
         InputStream inputStream;
         try {
             inputStream = new FileInputStream(sourceFile);
@@ -249,7 +258,7 @@ public abstract class LauncherCreator {
             mMojo.getLog().warn(warning);
             throw new IOException(warning);
         }
-        final File destinationFile = new File(destinationDirectory, sourceFile.getName());
+        final File destinationFile = new File(destinationDirectory, destinationFileName);
         OutputStream outputStream;
         try {
             outputStream = new FileOutputStream(destinationFile);
@@ -262,7 +271,8 @@ public abstract class LauncherCreator {
             inputStream, outputStream);
         mMojo.getLog().info("Created "
             + destinationDirectory.getAbsoluteFile()
-            + File.separatorChar + sourceFile.getName()
+            + File.separatorChar + destinationFileName
+            + " from " + sourceFile.getAbsolutePath() 
             + " [" + bytesCopied + " byte(s) copied]");
     }
 
@@ -308,19 +318,37 @@ public abstract class LauncherCreator {
         final Set<Artifact> transitiveArtifacts = getTransitiveArtifacts();
         getMojo().getLog().info("There are " + transitiveArtifacts.size() + " transitive artifacts");
         for (final Artifact artifact : transitiveArtifacts) {
-            if (artifact.getScope().equals("compile") && artifact.getType().equals("jar")) {
-                getMojo().getLog().info("Copying transitive artifact " + artifact);
-                final File artifactFile = artifact.getFile();
-                if (artifactFile.exists() && artifactFile.isFile()) {
-                    copyFile(artifactFile, destinationDirectory);
+            if (artifact.getScope().equals("compile")) {
+                copyTransitiveArtifact(destinationDirectory, artifact);
+            } else {
+                getMojo().getLog().info("Not copying transitive artifact " + artifact + " since it is not a compile-scoped artifact");
+            }
+        }
+    }
+
+    private void copyTransitiveArtifact(
+            final File destinationDirectory,
+            final Artifact artifact) throws IOException {
+        if (artifact.getType().equals("jar") || artifact.getType().equals("nar")) {
+            getMojo().getLog().info("Copying transitive artifact " + artifact);
+            final File artifactFile = artifact.getFile();
+            if (artifactFile.exists() && artifactFile.isFile()) {
+                if (artifact.getType().equals("nar")) {
+                    final String destinationJarFileName = artifactFile.getName().replace(".nar", ".jar");
+                    copyFileWithRename(artifactFile, destinationDirectory, destinationJarFileName);
+                    if (artifact.hasClassifier()) {
+                        getMojo().getLog().info(artifact + " has a classifier: " + artifact.getClassifier()); 
+                    }
                 } else {
-                    getMojo().getLog().warn("Not copying transitive artifact " + artifact + " since it either doesn't exist or is not a file");
-                    getMojo().getLog().info("(Perhaps you're running this from an IDE, and this artifact is resolved as a project in your");
-                    getMojo().getLog().info(" workspace and therefore on your classpath by the IDE?)");
+                    copyFile(artifactFile, destinationDirectory);
                 }
             } else {
-                getMojo().getLog().info("Not copying transitive artifact " + artifact + " since it is not a compile-scoped jar");
+                getMojo().getLog().warn("Not copying transitive artifact " + artifact + " since it either doesn't exist or is not a file");
+                getMojo().getLog().info("(Perhaps you're running this from an IDE, and this artifact is resolved as a project in your");
+                getMojo().getLog().info(" workspace and therefore on your classpath by the IDE?)");
             }
+        } else {
+            getMojo().getLog().info("Not copying transitive artifact " + artifact + " since it is not a jar or nar artifact");
         }
     }
 
