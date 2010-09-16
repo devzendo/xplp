@@ -52,6 +52,8 @@ ${xplp.macosxclasspatharray}
         </array>
 ${xplp.macosxvmoptionsarray}        <key>Properties</key>
         <dict>
+            <key>java.library.path</key>
+            <string>$JAVAROOT/lib</string>
             <key>com.apple.mrj.application.apple.menu.about.name</key>
             <string>${xplp.applicationname}</string>
             <key>apple.awt.textantialiasing</key>
