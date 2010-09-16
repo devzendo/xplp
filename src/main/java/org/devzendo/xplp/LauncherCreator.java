@@ -58,6 +58,7 @@ public abstract class LauncherCreator {
     private final Properties mParameterProperties;
     private final String[] mSystemProperties;
     private final String[] mVmArguments;
+    private final String[] mNarClassifierTypes;
 
     /**
      * @param mojo the parent mojo class
@@ -70,6 +71,7 @@ public abstract class LauncherCreator {
      * @param parameterProperties the plugin configuration parameters, as properties
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
+     * @param narClassifierTypes an array of NAR classifier:types
      */
     public LauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -80,7 +82,8 @@ public abstract class LauncherCreator {
             final Set<File> resourceDirectories,
             final Properties parameterProperties, 
             final String[] systemProperties, 
-            final String[] vmArguments) {
+            final String[] vmArguments,
+            final String[] narClassifierTypes) {
                 mMojo = mojo;
                 mOutputDirectory = outputDirectory;
                 mMainClassName = mainClassName;
@@ -91,6 +94,7 @@ public abstract class LauncherCreator {
                 mParameterProperties = parameterProperties;
                 mSystemProperties = systemProperties;
                 mVmArguments = vmArguments;
+                mNarClassifierTypes = narClassifierTypes;
     }
 
     /**
@@ -354,8 +358,43 @@ public abstract class LauncherCreator {
         final File artifactFile = artifact.getFile();
         final String destinationJarFileName = artifactFile.getName().replace(".nar", ".jar");
         copyFileWithRename(artifactFile, destinationDirectory, destinationJarFileName);
-        if (artifact.hasClassifier()) {
-            getMojo().getLog().info(artifact + " has a classifier: " + artifact.getClassifier()); 
+        
+        for (final String narClassifierType : mNarClassifierTypes) {
+            final String[] split = narClassifierType.split(":");
+            copyNarClassifierType(artifact, destinationDirectory, split[0], split[1]);
+        }
+    }
+
+    private void copyNarClassifierType(
+            final Artifact artifact,
+            final File destinationDirectory,
+            final String classifier,
+            final String type) throws IOException {
+        getMojo().getLog().info("Copying unpacked NAR files for artifact: " + artifact);
+        final File unpackedNarDirectory = new File(mOutputDirectory, "nar/lib/" + classifier + "/" + type);
+        if (!unpackedNarDirectory.exists() || !unpackedNarDirectory.isDirectory()) {
+            getMojo().getLog().warn(
+                "NAR unpacked library directory " + unpackedNarDirectory.getAbsolutePath()
+                + " for classifier:type " + classifier + ":" + type + " does not exist or is not a directory");
+            getMojo().getLog().warn("Did you forget to use the nar-assembly goal?");
+            return;
+        }
+        final File[] unpackedNarFiles = unpackedNarDirectory.listFiles();
+        for (final File file : unpackedNarFiles) {
+            final String name = file.getName();
+            getMojo().getLog().info("Considering NAR unpacked file: " + file.getAbsolutePath());
+            // Filter out files that are not library files, but unsure what the set
+            // of library files are: .jnilib, .so, .dll - but are there others?
+            if (name.equals("history.xml")) { // any other metadata files?
+                getMojo().getLog().info("Not copying " + name + " as it is NAR metadata");
+                continue;
+            }
+            final boolean isAnArtifactFile = name.contains(artifact.getArtifactId()) && name.contains(artifact.getVersion());
+            if (!isAnArtifactFile) {
+                getMojo().getLog().warn("Not copying " + name + " as it does not refer to the artifact " + artifact);
+                continue;
+            }
+            copyFile(file, destinationDirectory);
         }
     }
 

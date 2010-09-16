@@ -129,6 +129,21 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * @parameter expression="${xplp.systemproperty}"
      */
     private String[] vmArguments;
+
+    /**
+     * A list of NAR (Native ARchive, from the Maven NAR Plugin) classifiers and
+     * types. These refer to native library files that have been unpacked using
+     * the nar-unpack and nar-assembly goals of the Maven NAR Plugin, and reside
+     * in the target/nar/lib/classifier/type directories. Any files in these
+     * directories will be copied to the launcher's library directory.
+     * The params you specify here must be in the form classifier:type, e.g.
+     * x86_64-MacOSX-g++:jni and you may specify as many as you like; only those
+     * directories that have anything in them will have their contents copied.
+     *
+     * @parameter expression="${xplp.narClassifierTypes}"
+     */
+    private String[] narClassifierTypes;
+
     
     // Mac OS X Specific parameters -------------------------------
     
@@ -204,6 +219,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
         if (os == null || os.equals("none")) {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }
+        validateNarClassifierTypes();
         final Set<Artifact> transitiveArtifacts = getTransitiveDependencies();
         final Set<File> resourceDirectories = getResourceDirectories();
         final Properties parameterProperties = getParameterProperties();
@@ -214,6 +230,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
         getLog().info("Library directory: " + libraryDirectory);
         getLog().info("System properties: " + dumpArray(systemProperties));
         getLog().info("VM Arguments:      " + dumpArray(vmArguments));
+        getLog().info("NAR Classifier:Types: " + dumpArray(narClassifierTypes));
         
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
@@ -222,6 +239,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
                 libraryDirectory, transitiveArtifacts,
                 resourceDirectories,
                 parameterProperties, systemProperties, vmArguments,
+                narClassifierTypes,
                 fileType, iconsFileName, bundleSignature, bundleOsType, bundleTypeName);
         } else if (os.equals("Windows")) {
             getLog().info("Janel custom lines:" + dumpArray(janelCustomLines));
@@ -229,12 +247,12 @@ public final class CreateLauncherMojo extends AbstractMojo {
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
                 resourceDirectories, parameterProperties, systemProperties,
-                vmArguments, janelType, janelCustomLines);
+                vmArguments, narClassifierTypes, janelType, janelCustomLines);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
-                resourceDirectories, parameterProperties, systemProperties, vmArguments);
+                resourceDirectories, parameterProperties, systemProperties, vmArguments, narClassifierTypes);
         } else {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }
@@ -249,6 +267,23 @@ public final class CreateLauncherMojo extends AbstractMojo {
         }
     }
     
+    private void validateNarClassifierTypes() throws MojoFailureException {
+        if (narClassifierTypes == null) {
+            narClassifierTypes = new String[0];
+            return;
+        }
+        boolean allOK = true;
+        for (final String narClassifierType : narClassifierTypes) {
+            if (!narClassifierType.matches("^\\S+:\\S+$")) {
+                getLog().error("NAR Classifier:Type '" + narClassifierType + "' is not of the form Classifier:Type");
+                allOK = false;
+            }
+        }
+        if (!allOK) {
+            throw new MojoFailureException("One or more NAR Classifier:Type parameters are incorrectly specified");
+        }
+    }
+
     private String dumpArray(final Object[] objects) {
         final StringBuilder sb = new StringBuilder();
         if (objects != null) {

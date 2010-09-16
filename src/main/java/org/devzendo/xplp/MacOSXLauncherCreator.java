@@ -56,6 +56,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
      * @param parameterProperties the plugin configuration parameters, as properties
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
+     * @param narClassifierTypes an array of NAR classifier:types
      * @param fileType the file type (currently unused)
      * @param iconsFileName the name of the icons file
      * @param bundleSignature the bundle signature
@@ -72,6 +73,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
             final Properties parameterProperties,
             final String[] systemProperties,
             final String[] vmArguments,
+            final String[] narClassifierTypes,
             final String fileType,
             final String iconsFileName,
             final String bundleSignature,
@@ -80,7 +82,8 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
-            parameterProperties, systemProperties, vmArguments);
+            parameterProperties, systemProperties, vmArguments,
+            narClassifierTypes);
         mFileType = fileType;
         mIconsFileName = iconsFileName;
         mBundleSignature = bundleSignature;

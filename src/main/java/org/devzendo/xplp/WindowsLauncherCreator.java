@@ -49,6 +49,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
      * @param parameterProperties the plugin configuration parameters, as properties
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
+     * @param narClassifierTypes an array of NAR classifier:types
      * @param janelType the launcher type, Console or GUI.
      * @param janelCustomLines an array of extra lines to be added to the launcher file
      */
@@ -62,12 +63,14 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final Properties parameterProperties,
             final String[] systemProperties, 
             final String[] vmArguments, 
+            final String[] narClassifierTypes,
             final String janelType,
             final String[] janelCustomLines) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
-            parameterProperties, systemProperties, vmArguments);
+            parameterProperties, systemProperties, vmArguments,
+            narClassifierTypes);
         mJanelType = janelType;
         mJanelCustomLines = janelCustomLines;
     }

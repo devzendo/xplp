@@ -47,6 +47,7 @@ public class LinuxLauncherCreator extends LauncherCreator {
      * @param parameterProperties the plugin configuration parameters, as properties
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
+     * @param narClassifierTypes an array of NAR classifier:types
      */
     public LinuxLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -57,11 +58,12 @@ public class LinuxLauncherCreator extends LauncherCreator {
             final Set<File> resourceDirectories,
             final Properties parameterProperties, 
             final String[] systemProperties, 
-            final String[] vmArguments) {
+            final String[] vmArguments,
+            final String[] narClassifierTypes) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories, parameterProperties,
-            systemProperties, vmArguments);
+            systemProperties, vmArguments, narClassifierTypes);
     }
 
     /**
