@@ -1,5 +1,6 @@
 # This is a .lap file comment
--Djava.class.path=lib
+janel.classpath.jars.dir=lib
+janel.library.path.dir=lib
 janel.main.class=${xplp.mainclassname}
 ${xplp.windowssystemproperties}${xplp.windowsvmarguments}${xplp.janelcustomlines}
 #janel.java.bundle=SDK
