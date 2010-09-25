@@ -194,18 +194,15 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     }
 
     private String transitiveArtifactsAsPlistArray(final Set<Artifact> transitiveArtifacts) {
-        final StringBuilder libsAsArtifacts = new StringBuilder();
-        for (final Artifact transitiveArtifact : transitiveArtifacts) {
-            if (transitiveArtifact.getScope().equals("compile")
-                    && (transitiveArtifact.getType().equals("jar") 
-                        || transitiveArtifact.getType().equals("nar"))) {
-                final String artifactFileName = transitiveArtifact.getFile().getName().replaceFirst("\\.nar$", ".jar");
-                libsAsArtifacts.append("            <string>$JAVAROOT/lib/");
-                libsAsArtifacts.append(artifactFileName);
-                libsAsArtifacts.append("</string>");
-                libsAsArtifacts.append(LINE_SEPARATOR);
-            }
-        }
+    	final StringBuilder libsAsArtifacts = new StringBuilder();
+    	final Set<String> transitiveArtifactFileNames = getTransitiveJarOrNarArtifactFileNames(transitiveArtifacts);
+    	for (String fileName : transitiveArtifactFileNames) {
+    		libsAsArtifacts.append("            <string>$JAVAROOT/lib/");
+            libsAsArtifacts.append(fileName);
+            libsAsArtifacts.append("</string>");
+            libsAsArtifacts.append(LINE_SEPARATOR);
+		}
+       
         return libsAsArtifacts.toString();
     }
 }

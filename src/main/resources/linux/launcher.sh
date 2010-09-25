@@ -18,11 +18,4 @@ done
 progdir=`dirname "$PRG"`
 APPNAME=`basename "$0"`
 
-sh=sh
-# #73162: Ubuntu uses the ancient Bourne shell, which does not implement trap well.
-if [ -x /bin/bash ]
-then
-	sh=/bin/bash
-fi
-eval exec $sh java ${xplp.linuxjvmargs}-cp $progdir/lib ${xplp.mainclassname}
-exit 1
+java ${xplp.linuxjvmargs}-cp ${xplp.linuxclasspatharray} -Djava.library.path=$progdir/../lib ${xplp.mainclassname}

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -237,6 +238,19 @@ public abstract class LauncherCreator {
         return resourceAsStream;
     }
     
+    protected Set<String> getTransitiveJarOrNarArtifactFileNames(final Set<Artifact> transitiveArtifacts) {
+    	final Set<String> jarNarArtifacts = new HashSet<String>();
+    	for (final Artifact transitiveArtifact : transitiveArtifacts) {
+            if (transitiveArtifact.getScope().equals("compile")
+                    && (transitiveArtifact.getType().equals("jar") 
+                        || transitiveArtifact.getType().equals("nar"))) {
+                final String artifactFileName = transitiveArtifact.getFile().getName().replaceFirst("\\.nar$", ".jar");
+                jarNarArtifacts.add(artifactFileName);
+            }
+        }
+    	return jarNarArtifacts;
+    }
+
     /**
      * Copy a file from its source to a destination directory.
      * @param sourceFile the source file

@@ -23,12 +23,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Create a Linux launcher directory structure.
@@ -92,6 +94,7 @@ public class LinuxLauncherCreator extends LauncherCreator {
             jvmArgsString.append(' '); // a space at the end is needed
         }
         getParameterProperties().put("xplp.linuxjvmargs", jvmArgsString.toString());
+        getParameterProperties().put("xplp.linuxclasspatharray", transitiveArtifactsAsClassPathArray(getTransitiveArtifacts()));
 
         final File outputRunScript = new File(binDir, getApplicationName());
         copyInterpolatedPluginResource("linux/launcher.sh", outputRunScript);
@@ -110,5 +113,15 @@ public class LinuxLauncherCreator extends LauncherCreator {
             addDList.add("-D" + sysProp);
         }
         return addDList;
+    }
+
+    private String transitiveArtifactsAsClassPathArray(final Set<Artifact> transitiveArtifacts) {
+    	final ArrayList<String> libsAsArtifacts = new  ArrayList<String>();
+    	final Set<String> transitiveArtifactFileNames = getTransitiveJarOrNarArtifactFileNames(transitiveArtifacts);
+    	for (String fileName : transitiveArtifactFileNames) {
+    		libsAsArtifacts.add("$progdir/../lib/" + fileName);
+		}
+       
+        return StringUtils.join(libsAsArtifacts.iterator(), ":");
     }
 }
