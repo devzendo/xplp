@@ -9,3 +9,8 @@ Configuration Examples
   * {{{linux.html}Linux}} illustrating the creation of a shell script launcher
     with library directory structure, and archiving it into a .tar.gz.
     
+  * {{{nar.html}Java Native Interface}} illustrating the creation of a
+    project using the maven-nar-plugin to create Java Native Interface (JNI)
+    code, packaged as .nar (Native ARchive) attached artifacts, placing these
+    in the correct location in the launcher structure.
+    

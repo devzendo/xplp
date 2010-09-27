@@ -4,9 +4,8 @@ doing this.
 Retrofit tests using the Super Helpful Integration Test Thingy.
 
 Windows:
-  Test it :-)
   Munge the icon into the Janel binary.
 
 Linux:
-  Test it :-)
+  Investigate the way other popular java projects run on Linux.
   

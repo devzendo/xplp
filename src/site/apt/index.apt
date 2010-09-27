@@ -30,7 +30,7 @@ Cross Platform Launcher Plugin
 
 * Status
 
-  Current Plugin Version is: 0.1.0
+  Current Plugin Version is: 0.2.0
 
 * Introduction
 
@@ -43,6 +43,9 @@ Cross Platform Launcher Plugin
   be generated for all three platforms given some common configuration and
   some platform-specific configuration. 
 
+  The plugin also supports the use of JNI code built using
+  the {{{http://duns.github.com/maven-nar-plugin/}Maven NAR Plugin}}.
+  
 ** Mac OS X
   
   A directory structure is created, given the name \<Application\>.app,

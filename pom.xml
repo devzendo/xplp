@@ -7,7 +7,7 @@
 	<packaging>maven-plugin</packaging>
 	<name>CrossPlatformLauncherPlugin</name>
 	<version>0.2.0-SNAPSHOT</version>
-    <url>http://devzendo.org/xplp</url>
+	<url>http://devzendo.org/xplp</url>
 	<description>A Maven plugin that creates launchers for Windows
   	(using Janel), Mac OS X (creating a .app structure) or Linux
   	(using a shell script).
@@ -59,16 +59,20 @@
 			<version>1.5.1</version>
 			<scope>compile</scope>
 		</dependency>
-		
-    </dependencies>
-	
-    <reporting>
-	    <plugins>
-            <plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-plugin-plugin</artifactId>
-	            <version>2.5.1</version>
-	        </plugin>
-	    </plugins>
-	</reporting>  
+		<dependency>
+			<groupId>org.apache.maven.skins</groupId>
+			<artifactId>maven-default-skin</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>2.5.1</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>

@@ -49,6 +49,7 @@ under the License.
       <item name="Mac OS X" collapse="false" href="examples/macosx.html"/>
       <item name="Windows" collapse="false" href="examples/windows.html"/>
       <item name="Linux" collapse="false" href="examples/linux.html"/>	
+      <item name="JNI with the NAR Plugin" collapse="false" href="examples/nar.html"/>  
     </menu>
 	
   </body>

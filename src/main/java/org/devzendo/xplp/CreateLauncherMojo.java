@@ -133,9 +133,12 @@ public final class CreateLauncherMojo extends AbstractMojo {
     /**
      * A list of NAR (Native ARchive, from the Maven NAR Plugin) classifiers and
      * types. These refer to native library files that have been unpacked using
-     * the nar-unpack and nar-assembly goals of the Maven NAR Plugin, and reside
-     * in the target/nar/lib/classifier/type directories. Any files in these
-     * directories will be copied to the launcher's library directory.
+     * the nar-download, nar-unpack and nar-assembly goals of the Maven NAR
+     * Plugin, and reside in the target/nar/lib/classifier/type directories. 
+     * </p>
+     * Any files in these directories will be copied to the launcher's library
+     * directory.
+     * </p>
      * The params you specify here must be in the form classifier:type, e.g.
      * x86_64-MacOSX-g++:jni and you may specify as many as you like; only those
      * directories that have anything in them will have their contents copied.
