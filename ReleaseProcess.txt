@@ -1,3 +1,5 @@
+Publishing the code
+-------------------
 Update TODO.txt
 Set version in pom.xml, index.apt, commit.
 mvn -DcreateChecksum=true install
@@ -6,6 +8,18 @@ Copy org/devzendo/CrossPlatformLauncherPlugin/{x.y.z|maven-metadata-local.xml}
 Tag CrossPlatfromLauncherPlugin as x.y.z.
 
 Commit DevZendo.org Maven 2 Repository (svn working copy).
+
+Publishing the documentation
+----------------------------
+Delete site tree stored inside
+sftp://www.devzendo.org/public_htmlsites/default/files/xplp-site
+
+mvn site
+
+Upload target/site to that directory.
+
+Announcement
+------------ 
 Update changelog page on web site.
 Create story on main page announcing release.
 Add link to release notice on main page. 
