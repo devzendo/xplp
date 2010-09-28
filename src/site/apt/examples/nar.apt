@@ -6,6 +6,9 @@ Building a JNI (Java Native Interface) project with the Maven NAR Plugin
  configuration needed in order to build a JNI library, and package it into a
  launcher structure using the CrossPlatformLauncherPlugin.
  
+ The CrossPlatformLauncherPlugin has been developed and tested with version
+ 2.1-SNAPSHOT of the NAR plugin. 
+ 
  This cross-platform example does not show the actual code, just the Maven
  plugin configuration. This example is taken from the early development of
  another DevZendo.org project, the {{{http://devzendo.org/content/xpfsa}Cross
