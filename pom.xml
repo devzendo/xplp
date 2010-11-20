@@ -6,7 +6,7 @@
 	<artifactId>CrossPlatformLauncherPlugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<name>CrossPlatformLauncherPlugin</name>
-	<version>0.2.0</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<url>http://devzendo.org/xplp</url>
 	<description>A Maven plugin that creates launchers for Windows
   	(using Janel), Mac OS X (creating a .app structure) or Linux
@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>org.devzendo</groupId>
 		<artifactId>GroupParent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 
 	<dependencies>
