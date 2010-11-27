@@ -18,4 +18,4 @@ done
 progdir=`dirname "$PRG"`
 APPNAME=`basename "$0"`
 
-java ${xplp.linuxjvmargs}-cp ${xplp.linuxclasspatharray} -Djava.library.path=$progdir/../lib ${xplp.mainclassname}
+exec java ${xplp.linuxjvmargs}-cp ${xplp.linuxclasspatharray} -Djava.library.path=$progdir/../lib ${xplp.mainclassname} $@
