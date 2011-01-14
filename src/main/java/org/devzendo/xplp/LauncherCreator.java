@@ -237,18 +237,25 @@ public abstract class LauncherCreator {
         final InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
         return resourceAsStream;
     }
-    
+
+    /**
+     * Find all the compile-scoped .jar or .nar artifacts in a set, and ensure
+     * they're returned as .jars ('cos that's what they are).
+     * 
+     * @param transitiveArtifacts a set of artifacts
+     * @return the names of the filtered, transformed artifacts
+     */
     protected Set<String> getTransitiveJarOrNarArtifactFileNames(final Set<Artifact> transitiveArtifacts) {
-    	final Set<String> jarNarArtifacts = new HashSet<String>();
-    	for (final Artifact transitiveArtifact : transitiveArtifacts) {
+        final Set<String> jarNarArtifacts = new HashSet<String>();
+        for (final Artifact transitiveArtifact : transitiveArtifacts) {
             if (transitiveArtifact.getScope().equals("compile")
                     && (transitiveArtifact.getType().equals("jar") 
-                        || transitiveArtifact.getType().equals("nar"))) {
+                            || transitiveArtifact.getType().equals("nar"))) {
                 final String artifactFileName = transitiveArtifact.getFile().getName().replaceFirst("\\.nar$", ".jar");
                 jarNarArtifacts.add(artifactFileName);
             }
         }
-    	return jarNarArtifacts;
+        return jarNarArtifacts;
     }
 
     /**

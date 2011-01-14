@@ -200,15 +200,15 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
     }
 
     private String transitiveArtifactsAsPlistArray(final Set<Artifact> transitiveArtifacts) {
-    	final StringBuilder libsAsArtifacts = new StringBuilder();
-    	final Set<String> transitiveArtifactFileNames = getTransitiveJarOrNarArtifactFileNames(transitiveArtifacts);
-    	for (final String fileName : transitiveArtifactFileNames) {
-    		libsAsArtifacts.append("            <string>$JAVAROOT/lib/");
+        final StringBuilder libsAsArtifacts = new StringBuilder();
+        final Set<String> transitiveArtifactFileNames = getTransitiveJarOrNarArtifactFileNames(transitiveArtifacts);
+        for (final String fileName : transitiveArtifactFileNames) {
+            libsAsArtifacts.append("            <string>$JAVAROOT/lib/");
             libsAsArtifacts.append(fileName);
             libsAsArtifacts.append("</string>");
             libsAsArtifacts.append(LINE_SEPARATOR);
-		}
-       
+        }
+
         return libsAsArtifacts.toString();
     }
 }
