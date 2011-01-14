@@ -34,7 +34,7 @@ import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 
 /**
  * A Maven plugin that creates launcher directory structures for Windows
- * (using Janel), Mac OS X (creating a .app structure) or Linux
+ * (using Janel), Mac OS X (creating a .app or script structure) or Linux
  * (using a shell script).
  * 
  * @author Matt Gumbley, DevZendo.org
@@ -147,6 +147,14 @@ public final class CreateLauncherMojo extends AbstractMojo {
      */
     private String[] narClassifierTypes;
 
+    /**
+     * The launcher type, can be "Console" or "GUI". 
+     * For Windows, whether to use the Console or GUI Janel EXE.
+     * For Mac OS X, whether to create a script or .app structure.
+     * 
+     * @parameter expression="${xplp.launchertype}" default-value="GUI"
+     */
+    private String launcherType;
     
     // Mac OS X Specific parameters -------------------------------
     
@@ -202,8 +210,11 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * Windows only: Whether to use the Console or GUI Janel EXE.
      * Can be "Console" or "GUI"
      * 
-     * @parameter expression="${xplp.janeltype}" default-value="GUI"
+     * @deprecated Use launcherType instead.
+     * 
+     * @parameter expression="${xplp.janeltype}"
      */
+    @Deprecated
     private String janelType;
     
     /**
@@ -222,6 +233,9 @@ public final class CreateLauncherMojo extends AbstractMojo {
         if (os == null || os.equals("none")) {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }
+        if (janelType != null && !janelType.equals("")) {
+            throw new MojoExecutionException("The janelType attribute has been changed to launcherType in v0.2.1 of the plugin");
+        }
         validateNarClassifierTypes();
         final Set<Artifact> transitiveArtifacts = getTransitiveDependencies();
         final Set<File> resourceDirectories = getResourceDirectories();
@@ -237,25 +251,35 @@ public final class CreateLauncherMojo extends AbstractMojo {
         
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
-            launcherCreator = new MacOSXLauncherCreator(this,
-                outputDirectory, mainClassName, applicationName,
-                libraryDirectory, transitiveArtifacts,
-                resourceDirectories,
-                parameterProperties, systemProperties, vmArguments,
-                narClassifierTypes,
-                fileType, iconsFileName, bundleSignature, bundleOsType, bundleTypeName);
+            if (launcherType.equals("GUI")) { 
+                launcherCreator = new MacOSXLauncherCreator(this,
+                    outputDirectory, mainClassName, applicationName,
+                    libraryDirectory, transitiveArtifacts,
+                    resourceDirectories,
+                    parameterProperties, systemProperties, vmArguments,
+                    narClassifierTypes, launcherType,
+                    fileType, iconsFileName, bundleSignature, bundleOsType,
+                    bundleTypeName);
+            } else {
+                launcherCreator = new MacOSXScriptLauncherCreator(this,
+                    outputDirectory, mainClassName, applicationName,
+                    libraryDirectory, transitiveArtifacts,
+                    resourceDirectories, parameterProperties, systemProperties,
+                    vmArguments, narClassifierTypes, launcherType);
+            }
         } else if (os.equals("Windows")) {
             getLog().info("Janel custom lines:" + dumpArray(janelCustomLines));
             launcherCreator = new WindowsLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
                 resourceDirectories, parameterProperties, systemProperties,
-                vmArguments, narClassifierTypes, janelType, janelCustomLines);
+                vmArguments, narClassifierTypes, launcherType, janelCustomLines);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
-                resourceDirectories, parameterProperties, systemProperties, vmArguments, narClassifierTypes);
+                resourceDirectories, parameterProperties, systemProperties,
+                vmArguments, narClassifierTypes);
         } else {
             throw new MojoExecutionException("No <os>Windows|MacOSX|Linux</os> specified in the <configuration>");
         }

@@ -20,6 +20,7 @@
 package org.devzendo.xplp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -27,11 +28,12 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Create a Linux launcher directory structure.
+ * Create a Mc OS X launcher directory structure.
  * @author matt
  *
  */
-public class LinuxLauncherCreator extends UnixScriptLauncherCreator {
+public class MacOSXScriptLauncherCreator extends UnixScriptLauncherCreator {
+    private final String mLauncherType;
     /**
      * @param mojo the parent mojo class
      * @param outputDirectory where to create the .app structure 
@@ -44,8 +46,9 @@ public class LinuxLauncherCreator extends UnixScriptLauncherCreator {
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
      * @param narClassifierTypes an array of NAR classifier:types
+     * @param launcherType the launcher type, Console or GUI
      */
-    public LinuxLauncherCreator(final AbstractMojo mojo,
+    public MacOSXScriptLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
             final String mainClassName,
             final String applicationName,
@@ -55,10 +58,21 @@ public class LinuxLauncherCreator extends UnixScriptLauncherCreator {
             final Properties parameterProperties, 
             final String[] systemProperties, 
             final String[] vmArguments,
-            final String[] narClassifierTypes) {
-        super(mojo, outputDirectory, "linux", mainClassName,
+            final String[] narClassifierTypes,
+            final String launcherType) {
+        super(mojo, outputDirectory, "macosx", mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories, parameterProperties,
             systemProperties, vmArguments, narClassifierTypes);
+        mLauncherType = launcherType;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createLauncher() throws IOException {
+        getMojo().getLog().info("Launcher type:     " + mLauncherType);
+        super.createLauncher();
     }
 }

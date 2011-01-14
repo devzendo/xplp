@@ -8,4 +8,7 @@ Windows:
 
 Linux:
   Investigate the way other popular java projects run on Linux.
+
+
+Use enumerations instead of strings for the OS type.
   

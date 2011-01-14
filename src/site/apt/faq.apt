@@ -153,8 +153,12 @@ Frequently Asked Questions
        you have set it to Console. Place one of these in your configuration:
        
 +----
+          <!-- janelType must be used before v0.2.1 of the plugin -->
           <janelType>Console</janelType> <!-- or -->
           <janelType>GUI</janelType>
+          <!-- In v0.2.1, janelType must be changed to launcherType -->
+          <launcherType>Console</launcherType> <!-- or -->
+          <launcherType>GUI</launcherType>
 +----
        
   * Q. How can I set custom Janel settings?
@@ -247,6 +251,17 @@ Frequently Asked Questions
     </plugins>
   </build>
 
+  * Q. How can I build a command line application, rather than a .app
+       application structure?
+  
+  * A. By default, the plugin will create a .app application structure. To
+       change this to create a structure similar to that used on Linux, to
+       create a script that'll execute your code as a command line program,
+       change the launcher type:
+       
++----
+          <launcherType>Console</launcherType> <!-- or -->
+          <launcherType>GUI</launcherType>
 +----
  
 * Linux specific

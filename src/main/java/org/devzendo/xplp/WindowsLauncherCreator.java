@@ -35,7 +35,7 @@ import org.apache.maven.plugin.AbstractMojo;
 public class WindowsLauncherCreator extends LauncherCreator {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final String MSVCR71_DLL = "msvcr71.dll";
-    private final String mJanelType;
+    private final String mLauncherType;
     private final String[] mJanelCustomLines;
 
     /**
@@ -50,7 +50,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
      * @param narClassifierTypes an array of NAR classifier:types
-     * @param janelType the launcher type, Console or GUI.
+     * @param launcherType the launcher type, Console or GUI.
      * @param janelCustomLines an array of extra lines to be added to the launcher file
      */
     public WindowsLauncherCreator(final AbstractMojo mojo,
@@ -64,25 +64,25 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final String[] systemProperties, 
             final String[] vmArguments, 
             final String[] narClassifierTypes,
-            final String janelType,
+            final String launcherType,
             final String[] janelCustomLines) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
             parameterProperties, systemProperties, vmArguments,
             narClassifierTypes);
-        mJanelType = janelType;
+        mLauncherType = launcherType;
         mJanelCustomLines = janelCustomLines;
     }
     
     private void validate() {
-        if (mJanelType == null || mJanelType.length() == 0) {
-            final String message = "No janelType specified - this is mandatory for Windows";
+        if (mLauncherType == null || mLauncherType.length() == 0) {
+            final String message = "No launcherType specified - this is mandatory for Windows";
             getMojo().getLog().warn(message);
             throw new IllegalStateException(message);
         }
-        if (!(mJanelType.equals("Console") || mJanelType.equals("GUI"))) {
-            final String message = "janelType must be either 'Console' or 'GUI' (GUI is the default if not specified)";
+        if (!(mLauncherType.equals("Console") || mLauncherType.equals("GUI"))) {
+            final String message = "launcherType must be either 'Console' or 'GUI' (GUI is the default if not specified)";
             getMojo().getLog().warn(message);
             throw new IllegalStateException(message);
         }
@@ -98,7 +98,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
         getParameterProperties().put("xplp.windowsvmarguments", stringsToSeparatedJanelLines(getVmArguments()));
         getParameterProperties().put("xplp.janelcustomlines", stringsToSeparatedJanelLines(mJanelCustomLines));
 
-        getMojo().getLog().info("Janel .EXE type:   " + mJanelType);
+        getMojo().getLog().info("Janel .EXE type:   " + mLauncherType);
         
         final File osOutputDir = new File(getOutputDirectory(), "windows");
         final File libDir = new File(osOutputDir, "lib");
@@ -110,7 +110,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
         }
         
         final File outputJanelEXE = new File(osOutputDir, getApplicationName() + ".exe");
-        final String janelEXEResource = "windows/" + (mJanelType.equals("Console") ? "JanelConsole.exe" : "JanelWindows.exe");
+        final String janelEXEResource = "windows/" + (mLauncherType.equals("Console") ? "JanelConsole.exe" : "JanelWindows.exe");
         copyPluginResource(janelEXEResource, outputJanelEXE);
         // TODO icon munging in the launcher .EXE
         copyPluginResource("windows/" + MSVCR71_DLL, new File(osOutputDir, MSVCR71_DLL));

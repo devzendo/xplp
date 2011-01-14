@@ -44,6 +44,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     private final String mBundleSignature;
     private final String mBundleOsType;
     private final String mBundleTypeName;
+    private final String mLauncherType;
 
     /**
      * @param mojo the parent mojo class
@@ -57,6 +58,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
      * @param systemProperties an array of name=value system properties
      * @param vmArguments an array of arguments to the VM
      * @param narClassifierTypes an array of NAR classifier:types
+     * @param launcherType the launcher type, Console or GUI
      * @param fileType the file type (currently unused)
      * @param iconsFileName the name of the icons file
      * @param bundleSignature the bundle signature
@@ -74,6 +76,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
             final String[] systemProperties,
             final String[] vmArguments,
             final String[] narClassifierTypes,
+            final String launcherType,
             final String fileType,
             final String iconsFileName,
             final String bundleSignature,
@@ -89,6 +92,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         mBundleSignature = bundleSignature;
         mBundleOsType = bundleOsType;
         mBundleTypeName = bundleTypeName;
+        mLauncherType = launcherType;
     }
 
     private void validate() {
@@ -113,6 +117,8 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
         getParameterProperties().put("xplp.macosxsystemproperties", systemPropertiesAsPlistDict(getSystemProperties()));
         getParameterProperties().put("xplp.macosxvmoptionsarray", vmArgumentsAsPlistArray(getVmArguments()));
         getParameterProperties().put("xplp.macosxclasspatharray", transitiveArtifactsAsPlistArray(getTransitiveArtifacts()));
+
+        getMojo().getLog().info("Launcher type:     " + mLauncherType);
         getMojo().getLog().info("Icons file name:   " + mIconsFileName);
         getMojo().getLog().info("File type:         " + mFileType);
         getMojo().getLog().info("Bundle signature:  " + mBundleSignature);
@@ -196,7 +202,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
     private String transitiveArtifactsAsPlistArray(final Set<Artifact> transitiveArtifacts) {
     	final StringBuilder libsAsArtifacts = new StringBuilder();
     	final Set<String> transitiveArtifactFileNames = getTransitiveJarOrNarArtifactFileNames(transitiveArtifacts);
-    	for (String fileName : transitiveArtifactFileNames) {
+    	for (final String fileName : transitiveArtifactFileNames) {
     		libsAsArtifacts.append("            <string>$JAVAROOT/lib/");
             libsAsArtifacts.append(fileName);
             libsAsArtifacts.append("</string>");
