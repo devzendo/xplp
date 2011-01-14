@@ -37,7 +37,7 @@ import org.apache.maven.plugin.AbstractMojo;
  * @author matt
  *
  */
-public final class MacOSXLauncherCreator extends LauncherCreator {
+public final class MacOSXAppLauncherCreator extends LauncherCreator {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private final String mFileType;
     private final String mIconsFileName;
@@ -65,7 +65,7 @@ public final class MacOSXLauncherCreator extends LauncherCreator {
      * @param bundleOsType the bundle OS type
      * @param bundleTypeName the bundle type name
      */
-    public MacOSXLauncherCreator(final AbstractMojo mojo,
+    public MacOSXAppLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
             final String mainClassName,
             final String applicationName,

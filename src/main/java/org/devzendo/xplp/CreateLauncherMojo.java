@@ -252,7 +252,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
             if (launcherType.equals("GUI")) { 
-                launcherCreator = new MacOSXLauncherCreator(this,
+                launcherCreator = new MacOSXAppLauncherCreator(this,
                     outputDirectory, mainClassName, applicationName,
                     libraryDirectory, transitiveArtifacts,
                     resourceDirectories,
