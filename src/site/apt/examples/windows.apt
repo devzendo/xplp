@@ -1,4 +1,4 @@
-Windows laucher example from BenMinder
+Windows laucher example from BeanMinder
 
  For Windows, the BeanMinder project builds a directory structure containing a
  .exe launcher, .lap control file and libraries directory, and archives it into

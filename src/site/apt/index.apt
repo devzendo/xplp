@@ -30,7 +30,7 @@ Cross Platform Launcher Plugin
 
 * Status
 
-  Current Plugin Version is: 0.2.0
+  Current Plugin Version is: 0.2.1
 
 * Introduction
 
@@ -48,11 +48,17 @@ Cross Platform Launcher Plugin
   
 ** Mac OS X
   
-  A directory structure is created, given the name \<Application\>.app,
+  The plugin can create .app structures, and script launchers (like Linux).
+  
+  For .app structures: A directory structure is created, given the name \<Application\>.app,
   with libraries, configuration and icon in the correct place. Apple provide
   a tool to assist with this, but it's not easily invokable from Maven. There
   are other plugins that can achieve the same ends. See
   {{{http://mojo.codehaus.org/osxappbundle-maven-plugin/}OSX App Bundle}} for one such plugin.
+  
+  For script launchers, a directory structure is created with 'bin' and 'lib'
+  directories, containing the launcher script, and dependent libraries,
+  respectively.
   
   On Mac OS X, a popular addition to Java projects is the Quaqua look and feel
   library. See {{{http://www.randelshofer.ch/quaqua/}the Quaqua home page}} for details.

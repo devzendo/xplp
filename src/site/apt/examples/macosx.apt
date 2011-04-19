@@ -1,7 +1,11 @@
-Mac OS X launcher example from BeanMinder
+Mac OS X .app launcher example from BeanMinder
 
  For Mac OS X, the BeanMinder project builds a .app launcher structure,
  and archives it into a .tar.gz file.
+ 
+ The plugin can also be configured to create a launcher shell script, and
+ libraries directory, then archives this into a .tar.gz file. This example
+ will be shown later.
  
  Here are the relevant sections of the pom.xml from that project:
 
@@ -103,6 +107,78 @@ Mac OS X launcher example from BeanMinder
       </plugin>
     </plugins>
   </build>
+...
++----
+ 
+Mac OS X terminal program launcher example from ArchivectCommandMacOSX
+
+ The plugin can also be configured to create a launcher shell script, and
+ libraries directory, then archives this into a .tar.gz file.
+ 
+ Here are the relevant sections of the pom.xml from that project; note that
+ this project is somewhat complicated by its use of JNI (nar) artifacts:
+
++----
+...
+    <properties>
+        <appName>ArchivectCmd</appName>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>mac os x</id>
+            <activation>
+                <os>
+                    <name>mac os x</name>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <!--
+                        Create the Mac OS X Archivect command launcher structure under
+                        target/macosx.
+                    -->
+                    <plugin>
+                        <groupId>org.devzendo</groupId>
+                        <artifactId>CrossPlatformLauncherPlugin</artifactId>
+                        <version>0.2.1-SNAPSHOT</version>
+                        <configuration>
+                            <os>MacOSX</os>
+                            <launcherType>Console</launcherType>
+                            <applicationName>${appName}</applicationName>
+                            <mainClassName>org.devzendo.archivect.ArchivectMain</mainClassName>
+                            <narClassifierTypes>
+                                <param>x86_64-MacOSX-g++:jni</param>
+                            </narClassifierTypes>
+                            <!--
+                                I don't have an assigned creator code
+                                <bundleSignature>BM</bundleSignature>
+                            -->
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>createlauncher</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>createlauncher</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile> <!--  mac os x -->
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>ArchivectCommand</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+            <type>nar</type>
+        </dependency>
+    </dependencies>
+
 ...
 +----
  
