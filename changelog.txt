@@ -1,0 +1,20 @@
+# CrossPlatformLauncherPlugin Change history
+
+v0.1.0 01/08/2010 first release 
+  * Mostly tested on Mac OS X, but should work on Windows and Linux.
+
+v0.2.0 28/09/2010 second release
+  * Adds support for generating launchers containing JNI code using the
+    maven-nar-plugin.
+
+v0.2.1 19/04/2011 third release
+  * Fixes a Linux launching bug where the error code was not being returned
+    correctly
+  * Changed the Windows-specific janelType configuration property to be
+    available in all builds, and renamed it launcherType. It only makes sense
+    on Windows or MacOSX. Use of janelType now fails the build with a message
+    saying "use launcherType". On MacOSX, use the console launcherType to
+    create a structure like that used on Linux; GUI is still the default and
+    still creates a .app structure.
+  
+
