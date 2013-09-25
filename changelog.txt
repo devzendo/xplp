@@ -17,4 +17,6 @@ v0.2.1 19/04/2011 third release
     create a structure like that used on Linux; GUI is still the default and
     still creates a .app structure.
   
-
+v0.2.2 25/09/2013 fourth release
+  * First release to the Central Maven Repository; updated parent to that on
+    Central; no functional changes.

@@ -6,20 +6,48 @@
 	<artifactId>CrossPlatformLauncherPlugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<name>CrossPlatformLauncherPlugin</name>
-	<version>0.2.1</version>
+	<version>0.2.2-SNAPSHOT</version>
 	<url>http://devzendo.org/xplp</url>
 	<description>A Maven plugin that creates launchers for Windows
-  	(using Janel), Mac OS X (creating a .app structure) or Linux
-  	(using a shell script).
-  	(Apache License v2) 2008-2010 Matt Gumbley, DevZendo.org</description>
+  	(using Janel), Mac OS X (creating a .app structure, or tree with shell
+    script) or Linux (using a shell script).
+  	(Apache License v2) 2008-2013 Matt Gumbley, DevZendo.org</description>
 
-	<parent>
-		<groupId>org.devzendo</groupId>
-		<artifactId>GroupParent</artifactId>
-		<version>1.0.1</version>
-	</parent>
+    <organization>
+        <name>DevZendo.org</name>
+        <url>http://devzendo.org/</url>
+    </organization>
 
-	<dependencies>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>http://devzendo-org-xplp.googlecode.com/hg/</url>
+        <connection>scm:hg:http://devzendo-org-xplp.googlecode.com/hg/
+        </connection>
+        <developerConnection>
+            scm:hg:https://devzendo-org-xplp.googlecode.com/hg/
+        </developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>matt.gumbley</id>
+            <name>Matt Gumbley</name>
+            <email>matt.gumbley@devzendo.org</email>
+        </developer>
+    </developers>
+
+    <parent>
+        <groupId>org.devzendo</groupId>
+        <artifactId>GroupParent</artifactId>
+        <version>1.0.3</version>
+    </parent>
+
+    <dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

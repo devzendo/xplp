@@ -2,6 +2,12 @@ Publishing the code
 -------------------
 Update TODO.txt
 Set version in pom.xml, index.apt, commit.
+mvn release:clean
+mvn release:prepare
+mvn release:perform
+
+old:
+----
 mvn -DcreateChecksum=true install
 Copy org/devzendo/CrossPlatformLauncherPlugin/{x.y.z|maven-metadata-local.xml}
   to DevZendo.org Maven 2 Repository (svn working copy)
