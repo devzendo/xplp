@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.devzendo</groupId>
-	<artifactId>CrossPlatformLauncherPlugin</artifactId>
+	<artifactId>cross-platform-launcher-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<name>CrossPlatformLauncherPlugin</name>
-	<version>0.2.3-SNAPSHOT</version>
+	<name>cross-platform-launcher-plugin</name>
+	<version>1.1.0-SNAPSHOT</version>
 	<url>http://devzendo.org/xplp</url>
 	<description>A Maven plugin that creates launchers for Windows
   	(using Janel), Mac OS X (creating a .app structure, or tree with shell
     script) or Linux (using a shell script).
-  	(Apache License v2) 2008-2013 Matt Gumbley, DevZendo.org</description>
+  	(Apache License v2) 2008-2015 Matt Gumbley, DevZendo.org</description>
 
     <organization>
         <name>DevZendo.org</name>
@@ -25,11 +25,11 @@
         </license>
     </licenses>
     <scm>
-        <url>http://devzendo-org-xplp.googlecode.com/hg/</url>
-        <connection>scm:hg:http://devzendo-org-xplp.googlecode.com/hg/
+        <url>https://bitbucket.org/devzendo/xplp</url>
+        <connection>scm:hg:https://bitbucket.org/devzendo/xplp
         </connection>
         <developerConnection>
-            scm:hg:https://devzendo-org-xplp.googlecode.com/hg/
+            scm:hg:https://bitbucket.org/devzendo/xplp
         </developerConnection>
     </scm>
     <developers>
@@ -42,54 +42,54 @@
 
     <parent>
         <groupId>org.devzendo</groupId>
-        <artifactId>GroupParent</artifactId>
-        <version>1.0.3</version>
+        <artifactId>group-parent</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>2.3</version>
+			<version>3.3.1</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.8</version>
+			<version>1.2.17</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>2.0</version>
+			<version>2.0.11</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-project</artifactId>
-			<version>2.0</version>
+			<version>2.0.11</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
-			<version>1.5.1</version>
+			<version>3.0.22</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.skins</groupId>
 			<artifactId>maven-default-skin</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 		</dependency>
 	</dependencies>
 
@@ -98,7 +98,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.4</version>
 			</plugin>
 		</plugins>
 	</reporting>
