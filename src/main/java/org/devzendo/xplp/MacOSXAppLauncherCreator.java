@@ -39,12 +39,15 @@ import org.apache.maven.plugin.AbstractMojo;
  */
 public final class MacOSXAppLauncherCreator extends LauncherCreator {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String APPLE_STUB = "Apple";
+    public static final String UNIVERSAL_STUB = "Universal";
     private final String mFileType;
     private final String mIconsFileName;
     private final String mBundleSignature;
     private final String mBundleOsType;
     private final String mBundleTypeName;
     private final String mLauncherType;
+    private final String mStubType;
 
     /**
      * @param mojo the parent mojo class
@@ -64,6 +67,7 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
      * @param bundleSignature the bundle signature
      * @param bundleOsType the bundle OS type
      * @param bundleTypeName the bundle type name
+     * @param stubType the stub type, Apple or Universal
      */
     public MacOSXAppLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -81,7 +85,8 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
             final String iconsFileName,
             final String bundleSignature,
             final String bundleOsType,
-            final String bundleTypeName) {
+            final String bundleTypeName,
+            final String stubType) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
@@ -93,6 +98,7 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
         mBundleOsType = bundleOsType;
         mBundleTypeName = bundleTypeName;
         mLauncherType = launcherType;
+        mStubType = stubType;
     }
 
     private void validate() {
@@ -103,6 +109,11 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
         }
         if (mBundleSignature == null || mBundleSignature.length() == 0) {
             final String message = "No bundleSignature specified - this is mandatory for Mac OS X";
+            getMojo().getLog().warn(message);
+            throw new IllegalStateException(message);
+        }
+        if (mStubType == null || ((!mStubType.equals(APPLE_STUB)) && (!mStubType.equals(UNIVERSAL_STUB))) ) {
+            final String message = "Stub type must be '" + APPLE_STUB + "' or '" + UNIVERSAL_STUB + "'";
             getMojo().getLog().warn(message);
             throw new IllegalStateException(message);
         }
@@ -124,7 +135,8 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
         getMojo().getLog().info("Bundle signature:  " + mBundleSignature);
         getMojo().getLog().info("Bundle OS type:    " + mBundleOsType);
         getMojo().getLog().info("Bundle type name:  " + mBundleTypeName);
-        
+        getMojo().getLog().info("Stub type:         " + mStubType);
+
         final File osOutputDir = new File(getOutputDirectory(), "macosx");
         final File appDir = new File(osOutputDir, getApplicationName() + ".app");
         final File contentsDir = new File(appDir, "Contents");
@@ -146,7 +158,12 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
         }
         
         final File javaApplicationStub = new File(macOSDir, "JavaApplicationStub");
-        copyPluginResource("macosx/JavaApplicationStub", javaApplicationStub);
+        if (mStubType.equals(APPLE_STUB)) {
+            copyPluginResource("macosx/JavaApplicationStub", javaApplicationStub);
+        }
+        if (mStubType.equals(UNIVERSAL_STUB)) {
+            copyPluginResource("macosx/universalJavaApplicationStub", javaApplicationStub);
+        }
         makeExecutable(javaApplicationStub);
         
         copyProjectResource(mIconsFileName, new File(resourcesDir, mIconsFileName));

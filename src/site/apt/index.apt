@@ -3,7 +3,7 @@
   ---
   Matt Gumbley, DevZendo.org
   ---
-  16 June 2010
+  21 September 2017
   ---
 
 ~~ Licensed to the Apache Software Foundation (ASF) under one
@@ -30,7 +30,7 @@ Cross Platform Launcher Plugin
 
 * Status
 
-  Current Plugin Version is: 0.2.1
+  Current Plugin Version is: 1.1.0
 
 * Introduction
 
@@ -109,9 +109,17 @@ Cross Platform Launcher Plugin
 
 * Contact us
 
-  The project's home page is at: {{{http://devzendo.org/content/xplp}DevZendo.org Cross Platform Launcher Plugin}}.
+  The project's home page is at: {{{https://devzendo.github.io/dev/xplp/}DevZendo.org Cross Platform Launcher Plugin}}.
   
 * Examples
 
   See {{{examples/index.html}the index of examples}}.
-  
+
+* Acknowledgements
+
+    * Tobias Fichter whose Universal Application Stub is provided by this plugin (v2.1.0). This stub is licensed under
+      the MIT License. Please see {{{https://github.com/tofi86/universalJavaApplicationStub}Tobias' Github repo}} for
+      more details.
+
+    * The Redskaper Janel launcher is provided by this plugin. Please see {{{http://www.redskaper.com/}their project page}}
+      for more details.

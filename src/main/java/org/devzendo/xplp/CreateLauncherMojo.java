@@ -204,7 +204,19 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * @parameter expression="${xplp.bundletypename}"
      */
     private String bundleTypeName;
-    
+
+    /**
+     * Mac OS X GUI launchers only: whether to use Apple's JavaApplicationStub, or Tobias Fichter's universal
+     * application stub. (Currently this Maven plugin supplies v2.1.0 of Tobias' stub)
+     * Please see https://github.com/tofi86/universalJavaApplicationStub for details of this.
+     * If you want to launch with something other than Apple Java 6, you need the universal stub.
+     *
+     * Can be "Apple" or "Universal". Default is "Apple" for backwards compatibility.
+     *
+     * @parameter expression="${xplp.stubtype}" default-value="Apple"
+     */
+    private String stubType;
+
     // Windows specific parameters
     /**
      * Windows only: Whether to use the Console or GUI Janel EXE.
@@ -259,7 +271,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
                     parameterProperties, systemProperties, vmArguments,
                     narClassifierTypes, launcherType,
                     fileType, iconsFileName, bundleSignature, bundleOsType,
-                    bundleTypeName);
+                    bundleTypeName, stubType);
             } else {
                 launcherCreator = new MacOSXScriptLauncherCreator(this,
                     outputDirectory, mainClassName, applicationName,

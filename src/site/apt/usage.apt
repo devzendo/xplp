@@ -1,12 +1,7 @@
 Using the Cross Platform Launcher Plugin
 
   To use the Cross Platform Launcher Plugin in Maven 2, you simply need to:
-  
-    * add the DevZendo.org Maven repository to your Maven settings. For details
-      of how to do this, please consult the 
-      {{{http://www.devzendo.org/content/maven-2-repositories}Maven 2 Repositories}}
-      page at our website.
-      
+
     * provide platform-specific files in your src/main/resources directory, e.g.
       a .icns icon file for Mac OS X.
     

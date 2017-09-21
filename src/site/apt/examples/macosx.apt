@@ -17,11 +17,11 @@ Mac OS X .app launcher example from BeanMinder
       <artifactId>BeanMinderCore</artifactId>
       <version>0.2.0-SNAPSHOT</version>
     </dependency>
-    <dependency> <!-- Not released in central -->
-      <groupId>ch.randelshofer</groupId>
+    <dependency>
+      <groupId>org.devzendo</groupId>
       <artifactId>libquaqua</artifactId>
       <type>zip</type>
-      <version>6.5</version>
+      <version>9.1</version>
     </dependency>
   </dependencies>
   
@@ -38,6 +38,7 @@ Mac OS X .app launcher example from BeanMinder
           <mainClassName>org.devzendo.minimiser.MiniMiser</mainClassName>
           <iconsFileName>BeanMinder.icns</iconsFileName>
           <bundleSignature>BM</bundleSignature>
+          <stubType>Universal</stubType>
         </configuration>
         <executions>
           <execution>
@@ -65,9 +66,9 @@ Mac OS X .app launcher example from BeanMinder
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>ch.randelshofer</groupId>
+                  <groupId>org.devzendo</groupId>
                   <artifactId>libquaqua</artifactId>
-                  <version>6.5</version>
+                  <version>9.1</version>
                   <type>zip</type>
                   <overWrite>true</overWrite>
                   <includes>*</includes>

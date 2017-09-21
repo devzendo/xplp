@@ -1,6 +1,6 @@
 Frequently Asked Questions
 
- (Or things that will be changed/fixed as it moves out of SNAPSHOT status)
+ (Or things that may be changed/fixed as it moves out of SNAPSHOT status)
  
 * General
 
@@ -194,20 +194,23 @@ Frequently Asked Questions
 
   * Q. How can I add the Quaqua look and feel's native libraries into my launcher?
   
-  * A. You need to add a dependency on them (they're available from 
-       {{{http://www.devzendo.org/content/maven-2-repositories}the DevZendo.org Maven 2 Repositories}}),
-       (possibly in a profile that's only activated on Mac OS X), and extract 
-       them into the correct place in your launcher .app directory structure
-       using the Maven dependency plugin:
-       
+  * A. Note that versions 9.1 and 7.3.4 are released to the Central Maven Repository in the org.devzendo group id.
+       The author of Quaqua, Werner Randelshofer does not publish to Central, so DevZendo.org has produced this
+       packaging of it. Note that the 7.3.4 artifacts are called Quaqua and LibQuaqua, whereas 9.1 now adopts the
+       Maven Artifact Naming Convention of quaqua and libquaqua.
+
+       You need to add a dependency on the Java portion of them,
+       (possibly in a profile that's only activated on Mac OS X), and extract the native portion of
+       them into the correct place in your launcher .app directory structure using the Maven dependency plugin:
+
+
 +----
   <dependencies>
     ...
-    <dependency> <!-- Not released in central -->
-      <groupId>ch.randelshofer</groupId>
-      <artifactId>libquaqua</artifactId>
-      <type>zip</type>
-      <version>6.5</version>
+    <dependency>
+      <groupId>org.devzendo</groupId>  <!-- Note that this uses DevZendo.org's Maven packaging of Quaqua -->
+      <artifactId>quaqua</artifactId>  <!-- The Java portion -->
+      <version>9.1</version>
     </dependency>
   </dependencies>
   
@@ -231,9 +234,9 @@ Frequently Asked Questions
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>ch.randelshofer</groupId>
+                  <groupId>org.devzendo</groupId>
                   <artifactId>libquaqua</artifactId>
-                  <version>6.5</version>
+                  <version>9.1</version> <!-- The JNI libraries -->
                   <type>zip</type>
                   <overWrite>true</overWrite>
                   <includes>*</includes>
@@ -265,7 +268,21 @@ Frequently Asked Questions
           <launcherType>Console</launcherType> <!-- or -->
           <launcherType>GUI</launcherType>
 +----
- 
+
+  * Q. My GUI launcher is starting with Apple Java 1.6, and I need Oracle Java 7 or 8 (which I have installed). How
+       can I run in a more modern JVM?
+
+  * A. This is due to the 'JavaApplicationStub' that's in your .app's Contents/MacOS directory. This Maven plugin
+       provides Apple's stub by default, but since this only works with Apple Java 1.6, it also supplies Tobias
+       Fichter's Universal JavaApplicationStub.
+       Please see https://github.com/tofi86/universalJavaApplicationStub for in-depth details, but in your launcher
+       configuration, you need to supply:
+
+
++----
+          <stubType>Universal</stubType>
++----
+
 * Linux specific
 
   * Nothing of note, as yet.
