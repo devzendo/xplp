@@ -4,6 +4,9 @@ Windows laucher example from BeanMinder
  .exe launcher, .lap control file and libraries directory, and archives it into
  a .zip file.
 
+ Note that the code of the application is in the BeanMinderCore module,
+ and that the pom.xml shown here is from a separate BeanMinderCoreWindows module.
+
  Here are the relevant sections of the pom.xml from that project:
 
 +----
@@ -21,7 +24,8 @@ Windows laucher example from BeanMinder
       <!-- Create the Windows launcher structure under target/windows. -->
       <plugin>
         <groupId>org.devzendo</groupId>
-        <artifactId>CrossPlatformLauncherPlugin</artifactId>
+        <artifactId>cross-platform-launcher-plugin</artifactId>
+        <version>1.1.10</version>
         <configuration>
           <os>Windows</os>
           <applicationName>BeanMinder</applicationName>
@@ -49,8 +53,8 @@ Windows laucher example from BeanMinder
         <dependencies>
           <dependency>
             <groupId>org.devzendo</groupId>
-            <artifactId>CrossPlatformLauncherPlugin</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <artifactId>cross-platform-launcher-plugin</artifactId>
+            <version>1.1.0</version>
           </dependency>
         </dependencies>
         <executions>

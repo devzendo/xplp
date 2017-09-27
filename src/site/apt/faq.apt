@@ -141,7 +141,7 @@ Frequently Asked Questions
     pom.xml so that the CrossPlatformLauncherPlugin copies the relevant JNI
     files into the launcher's library directory appropriately.
     
-    See the {{{examples/nar.html}NAR Example}} for a worked example.
+    See the {{{./examples/nar.html}NAR Example}} for a worked example.
      
 * Windows-specific
 

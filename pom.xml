@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.apache.maven.skins</groupId>
             <artifactId>maven-default-skin</artifactId>
-            <version>1.0</version>
+            <version>1.2</version>
         </dependency>
     </dependencies>
 

@@ -6,8 +6,11 @@ Mac OS X .app launcher example from BeanMinder
  The plugin can also be configured to create a launcher shell script, and
  libraries directory, then archives this into a .tar.gz file. This example
  will be shown later.
- 
- Here are the relevant sections of the pom.xml from that project:
+
+ Note that the code of the application is in the BeanMinderCore module,
+ and that the pom.xml shown here is from a separate BeanMinderCoreOSX module.
+
+ Here are the relevant sections of the pom.xml from that module:
 
 +----
 ...
@@ -31,7 +34,8 @@ Mac OS X .app launcher example from BeanMinder
            target/macosx. -->
       <plugin>
         <groupId>org.devzendo</groupId>
-        <artifactId>CrossPlatformLauncherPlugin</artifactId>
+        <artifactId>cross-platform-launcher-plugin</artifactId>
+        <version>1.1.1</version>
         <configuration>
           <os>MacOSX</os>
           <applicationName>BeanMinder</applicationName>
@@ -92,8 +96,8 @@ Mac OS X .app launcher example from BeanMinder
         <dependencies>
           <dependency>
             <groupId>org.devzendo</groupId>
-            <artifactId>CrossPlatformLauncherPlugin</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <artifactId>cross-platform-launcher-plugin</artifactId>
+            <version>1.1.0</version>
           </dependency>
         </dependencies>
         <executions>
@@ -141,8 +145,8 @@ Mac OS X terminal program launcher example from ArchivectCommandMacOSX
                     -->
                     <plugin>
                         <groupId>org.devzendo</groupId>
-                        <artifactId>CrossPlatformLauncherPlugin</artifactId>
-                        <version>0.2.1-SNAPSHOT</version>
+                        <artifactId>cross-platform-launcher-plugin</artifactId>
+                        <version>1.1.0</version>
                         <configuration>
                             <os>MacOSX</os>
                             <launcherType>Console</launcherType>

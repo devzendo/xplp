@@ -34,6 +34,10 @@ Cross Platform Launcher Plugin
 
 * Introduction
 
+  This plugin creates single-click/run launch 'apps', executables or scripts
+  that bundle all a program's code, libraries and resources into an easily-distributable
+  single directory.
+
   In order to run a Java application, the JVM must be loaded with the correct
   configuration, namely, the main class, the classpath libraries, any system
   properties and VM arguments.
@@ -51,8 +55,8 @@ Cross Platform Launcher Plugin
   The plugin can create .app structures, and script launchers (like Linux).
   
   For .app structures: A directory structure is created, given the name \<Application\>.app,
-  with libraries, configuration and icon in the correct place. Apple provide
-  a tool to assist with this, but it's not easily invokable from Maven. There
+  with 'application stub', code, libraries, configuration and icon in the correct place.
+  Apple provide a tool to assist with this, but it's not easily invokable from Maven. There
   are other plugins that can achieve the same ends. See
   {{{http://mojo.codehaus.org/osxappbundle-maven-plugin/}OSX App Bundle}} for one such plugin.
   
@@ -65,6 +69,14 @@ Cross Platform Launcher Plugin
   Using this requires the addition of native libraries. The Maven
   dependency plugin can be used to extract these libraries from your local
   Maven repository into the correct location in your .app launcher structure.
+
+  See {{{./examples/macosx.html}Mac OSX Examples}} to see how to achieve this.
+
+  The older Apple Java 1.6 system provided an 'application stub' which must be present in your
+  .app structure. This is invoked when you launch your program from its icon. This only worked
+  in 1.6, and for later versions of Oracle Java, an alternative 'universal' application stub
+  (developed by Tobias Fichter) is provided. This plugin contains both the Apple stub, and
+  the Universal one, switchable via plugin configuration.
 
 ** Windows
 
@@ -113,11 +125,11 @@ Cross Platform Launcher Plugin
   
 * Examples
 
-  See {{{examples/index.html}the index of examples}}.
+  See {{{./examples/index.html}the index of examples}}.
 
 * Acknowledgements
 
-    * Tobias Fichter whose Universal Application Stub is provided by this plugin (v2.1.0). This stub is licensed under
+    * Tobias Fichter's Universal Application Stub is provided by this plugin (v2.1.0). This stub is licensed under
       the MIT License. Please see {{{https://github.com/tofi86/universalJavaApplicationStub}Tobias' Github repo}} for
       more details.
 

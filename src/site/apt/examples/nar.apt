@@ -4,9 +4,9 @@ Building a JNI (Java Native Interface) project with the Maven NAR Plugin
  The {{{http://duns.github.com/maven-nar-plugin/}Maven NAR Plugin}} provides the
  easiest way to interface native code to Java projects. This example shows the
  configuration needed in order to build a JNI library, and package it into a
- launcher structure using the CrossPlatformLauncherPlugin.
+ launcher structure using the cross-platform-launcher-plugin.
  
- The CrossPlatformLauncherPlugin has been developed and tested with version
+ The cross-platform-launcher-plugin has been developed and tested with version
  2.1-SNAPSHOT of the NAR plugin. 
  
  This cross-platform example does not show the actual code, just the Maven
@@ -41,10 +41,10 @@ Building a JNI (Java Native Interface) project with the Maven NAR Plugin
  
  The nar-download, nar-unpack and nar-assembly goals of the Maven NAR
  Plugin must be executed, followed by the CrossPlatformLauncherPlugin.
- The CrossPlatformLauncherPlugin understands AOL:type classifiers and
+ The cross-platform-launcher-plugin understands AOL:type classifiers and
  will copy these, and their .nar libraries over into the launcher structure. 
  
- The 'main' class referred to in the CrossPlatformLauncherPlugin
+ The 'main' class referred to in the cross-platform-launcher-plugin
  configuration is that of the CrossPlatformFileSystemAccessTest project.
  
 CrossPlatformFileSystemAccess: The JNI Project
@@ -193,7 +193,7 @@ CrossPlatformFileSystemAccessProduct: The Launcher Generation Project
  Finally, CrossPlatformFileSystemAccessProduct's pom.xml. Note the activation of
  configuration specific to the operating system upon which the package goal is
  invoked, and the specification of the NAR Plugin's AOL-classifier:type in each
- invocation of the CrossPlatformLauncherPlugin.
+ invocation of the cross-platform-launcher-plugin.
  
  The Mac OS X profile also copies the Quaqua JNI library over to the launcher
  structure, and declares the dependency of the java half of Quaqua.
@@ -235,8 +235,8 @@ CrossPlatformFileSystemAccessProduct: The Launcher Generation Project
                     -->
                     <plugin>
                         <groupId>org.devzendo</groupId>
-                        <artifactId>CrossPlatformLauncherPlugin</artifactId>
-                        <version>0.2.0-SNAPSHOT</version>
+                        <artifactId>cross-platform-launcher-plugin</artifactId>
+                        <version>1.1.0</version>
                         <configuration>
                             <os>MacOSX</os>
                             <applicationName>${appName}</applicationName>
@@ -277,9 +277,9 @@ CrossPlatformFileSystemAccessProduct: The Launcher Generation Project
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>ch.randelshofer</groupId>
+                                            <groupId>org.devzendo</groupId>
                                             <artifactId>libquaqua</artifactId>
-                                            <version>6.5</version>
+                                            <version>9.1</version>
                                             <type>zip</type>
                                             <overWrite>true</overWrite>
                                             <includes>*</includes>
@@ -295,10 +295,10 @@ CrossPlatformFileSystemAccessProduct: The Launcher Generation Project
                 </plugins>
             </build>
             <dependencies>
-                <dependency> <!-- Not released in central -->
-                    <groupId>ch.randelshofer</groupId>
+                <dependency>
+                    <groupId>org.devzendo</groupId>
                     <artifactId>quaqua</artifactId>
-                    <version>6.5</version> <!--  started with 5.2.1 -->
+                    <version>9.1</version>
                 </dependency>
             </dependencies>
         </profile> <!--  mac os x -->
@@ -318,8 +318,8 @@ CrossPlatformFileSystemAccessProduct: The Launcher Generation Project
                     -->
                     <plugin>
                         <groupId>org.devzendo</groupId>
-                        <artifactId>CrossPlatformLauncherPlugin</artifactId>
-                        <version>0.2.0-SNAPSHOT</version>
+                        <artifactId>cross-platform-launcher-plugin</artifactId>
+                        <version>1.1.0</version>
                         <configuration>
                             <os>Windows</os>
                             <applicationName>${appName}</applicationName>
@@ -357,8 +357,8 @@ CrossPlatformFileSystemAccessProduct: The Launcher Generation Project
                     -->
                     <plugin>
                         <groupId>org.devzendo</groupId>
-                        <artifactId>CrossPlatformLauncherPlugin</artifactId>
-                        <version>0.2.0-SNAPSHOT</version>
+                        <artifactId>cross-platform-launcher-plugin</artifactId>
+                        <version>1.1.0</version>
                         <configuration>
                             <os>Linux</os>
                             <applicationName>${appName}</applicationName>
