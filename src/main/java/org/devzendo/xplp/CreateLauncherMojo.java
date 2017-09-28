@@ -206,7 +206,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String bundleTypeName;
 
     /**
-     * Mac OS X GUI launchers only: whether to use Apple's JavaApplicationStub, or Tobias Fichter's universal
+     * Mac OS X GUI launchers only: whether to use Apple's JavaApplicationStub, or Tobias Fischer's universal
      * application stub. (Currently this Maven plugin supplies v2.1.0 of Tobias' stub)
      * Please see https://github.com/tofi86/universalJavaApplicationStub for details of this.
      * If you want to launch with something other than Apple Java 6, you need the universal stub.

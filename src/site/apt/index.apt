@@ -75,7 +75,7 @@ Cross Platform Launcher Plugin
   The older Apple Java 1.6 system provided an 'application stub' which must be present in your
   .app structure. This is invoked when you launch your program from its icon. This only worked
   in 1.6, and for later versions of Oracle Java, an alternative 'universal' application stub
-  (developed by Tobias Fichter) is provided. This plugin contains both the Apple stub, and
+  (developed by Tobias Fischer) is provided. This plugin contains both the Apple stub, and
   the Universal one, switchable via plugin configuration.
 
 ** Windows
@@ -129,7 +129,7 @@ Cross Platform Launcher Plugin
 
 * Acknowledgements
 
-    * Tobias Fichter's Universal Application Stub is provided by this plugin (v2.1.0). This stub is licensed under
+    * Tobias Fischer's Universal Application Stub is provided by this plugin (v2.1.0). This stub is licensed under
       the MIT License. Please see {{{https://github.com/tofi86/universalJavaApplicationStub}Tobias' Github repo}} for
       more details.
 

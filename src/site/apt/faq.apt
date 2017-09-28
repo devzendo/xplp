@@ -274,7 +274,7 @@ Frequently Asked Questions
 
   * A. This is due to the 'JavaApplicationStub' that's in your .app's Contents/MacOS directory. This Maven plugin
        provides Apple's stub by default, but since this only works with Apple Java 1.6, it also supplies Tobias
-       Fichter's Universal JavaApplicationStub.
+       Fischer's Universal JavaApplicationStub.
        Please see https://github.com/tofi86/universalJavaApplicationStub for in-depth details, but in your launcher
        configuration, you need to supply:
 
