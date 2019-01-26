@@ -22,7 +22,8 @@ under the License.
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd"
-  name="Cross Platform Launcher Plugin">
+  name="Cross Platform Launcher Plugin"
+  combine.self="override">
   <body>
     <!-- <menu name="Reference">
       <item name="Features" href="features.html"/>
