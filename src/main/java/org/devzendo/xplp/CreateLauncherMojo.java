@@ -236,7 +236,32 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * @parameter expression="${xplp.janelcustomlines}"
      */
     private String[] janelCustomLines;
-    
+
+    /**
+     * Windows only: The (major/minor) version of Janel you wish to use to launch your program. Choices are:
+     * The Original Janel 3.0.2 by Timothy D. Kil that's been discontinued.
+     * The Enhanced Janel 4.2.0-98 continued by Michael Knigge.
+     * Both versions of Janel are embedded in the plugin; if you are using the Enhanced version, also consider setting
+     * the xplp.janelbits property.
+     *
+     * Can be "3.0" (currently 3.0.2) or "4.2" (currently 4.2.0-98).
+     * The default is "3.0" for backwards compatibility.
+     *
+     * @parameter expression="${xplp.janelversion}" default-value="3.0"
+     */
+    private String janelVersion;
+
+    /**
+     * Windows only: If using the Enhanced Janel, are you using 32- or 64-bit? The original Janel makes no such
+     * distinction.
+     *
+     * Can be "32" or "64".
+     * The default is "64" as 32-bit systems are becoming rarer.
+     *
+     * @parameter expression="${xplp.janelbits}" default-value="64"
+     */
+    private String janelBits;
+
     /**
      * {@inheritDoc}
      */
@@ -285,7 +310,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
                 resourceDirectories, parameterProperties, systemProperties,
-                vmArguments, narClassifierTypes, launcherType, janelCustomLines);
+                vmArguments, narClassifierTypes, launcherType, janelVersion, janelBits, janelCustomLines);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,

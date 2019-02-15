@@ -37,6 +37,8 @@ public class WindowsLauncherCreator extends LauncherCreator {
     private static final String MSVCR71_DLL = "msvcr71.dll";
     private final String mLauncherType;
     private final String[] mJanelCustomLines;
+    private final String mJanelVersion;
+    private final String mJanelBits;
 
     /**
      * @param mojo the parent mojo class
@@ -51,6 +53,8 @@ public class WindowsLauncherCreator extends LauncherCreator {
      * @param vmArguments an array of arguments to the VM
      * @param narClassifierTypes an array of NAR classifier:types
      * @param launcherType the launcher type, Console or GUI.
+     * @param janelVersion the version of Janel, 3.0 or 4.2
+     * @param janelBits 32 or 64 bit Janel 4.2
      * @param janelCustomLines an array of extra lines to be added to the launcher file
      */
     public WindowsLauncherCreator(final AbstractMojo mojo,
@@ -65,6 +69,8 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final String[] vmArguments, 
             final String[] narClassifierTypes,
             final String launcherType,
+            final String janelVersion,
+            final String janelBits,
             final String[] janelCustomLines) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
@@ -73,6 +79,8 @@ public class WindowsLauncherCreator extends LauncherCreator {
             narClassifierTypes);
         mLauncherType = launcherType;
         mJanelCustomLines = janelCustomLines;
+        mJanelVersion = janelVersion;
+        mJanelBits = janelBits;
     }
     
     private void validate() {
@@ -85,6 +93,16 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final String message = "launcherType must be either 'Console' or 'GUI' (GUI is the default if not specified)";
             getMojo().getLog().warn(message);
             throw new IllegalStateException(message);
+        }
+        if (mJanelVersion.equals("3.0") || mJanelVersion.equals("4.2")) {
+            getMojo().getLog().info("Janel version:" + mJanelVersion);
+        } else {
+            throw new IllegalStateException("Janel version must be 3.0 or 4.2");
+        }
+        if (mJanelBits.equals("32") || mJanelBits.equals("64")) {
+            getMojo().getLog().info("Janel bits:" + mJanelBits);
+        } else {
+            throw new IllegalStateException("Janel bits must be 32 or 64");
         }
     }
 
@@ -110,7 +128,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
         }
         
         final File outputJanelEXE = new File(osOutputDir, getApplicationName() + ".exe");
-        final String janelEXEResource = "windows/" + (mLauncherType.equals("Console") ? "JanelConsole.exe" : "JanelWindows.exe");
+        final String janelEXEResource = "windows/" + janelExecutableName();
         copyPluginResource(janelEXEResource, outputJanelEXE);
         // TODO icon munging in the launcher .EXE
         copyPluginResource("windows/" + MSVCR71_DLL, new File(osOutputDir, MSVCR71_DLL));
@@ -118,6 +136,19 @@ public class WindowsLauncherCreator extends LauncherCreator {
         copyInterpolatedPluginResource("windows/launcher.lap", new File(osOutputDir, getApplicationName() + ".lap"));
 
         copyTransitiveArtifacts(libDir);
+    }
+
+    private String janelExecutableName() {
+        final String consoleOrWindows = mLauncherType.equals("Console") ? "Console" : "Windows";
+        if (mJanelVersion.equals("3.0")) {
+            // It's the original 3.0 version
+            final String originalDir = "3.0.2";
+            return originalDir + "/Janel" + consoleOrWindows + ".exe";
+        } else {
+            // It's the enhanced 4.2 version
+            final String enhancedDir = "4.2.0-98";
+            return enhancedDir + "/Janel" + consoleOrWindows + mJanelBits + ".exe";
+        }
     }
 
     private String stringsToSeparatedJanelLines(final String[] strings) {

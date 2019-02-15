@@ -34,3 +34,11 @@ v1.1.0 21/09/2017 fifth release
 v1.1.1 28/09/2017 sixth release
 
   * Corrected typos in documentation.
+
+v1.2.0 15/02/2019 seventh release
+
+  * Windows: Added the enhanced version of Janel 4.2.0-98 from Michael Knigge https://github.com/michaelknigge/janel
+    To provide support for 64-bit modern Java, Java 9, etc. - see the Github page for details.
+    The default version of Janel is still 3.0.2 for backwards compatibility. To switch to the enhanced Janel
+    use the <janelVersion>4.2</janelVersion> and optionally <janelBits>64</janelBits> (default) or
+    <janelBits>32</janelBits> to switch between 64- and 32-bit variants.

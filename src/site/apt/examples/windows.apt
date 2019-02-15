@@ -25,7 +25,7 @@ Windows laucher example from BeanMinder
       <plugin>
         <groupId>org.devzendo</groupId>
         <artifactId>cross-platform-launcher-plugin</artifactId>
-        <version>1.1.10</version>
+        <version>1.2.0</version>
         <configuration>
           <os>Windows</os>
           <applicationName>BeanMinder</applicationName>

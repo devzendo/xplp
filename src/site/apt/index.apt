@@ -30,7 +30,7 @@ Cross Platform Launcher Plugin
 
 * Status
 
-  Current Plugin Version is: 1.1.2
+  Current Plugin Version is: 1.2.0
 
 * Introduction
 
@@ -83,9 +83,13 @@ Cross Platform Launcher Plugin
   The JVM must be loaded by some process. It is possible to do this
   from a .cmd file, but running the .cmd file leaves an unsightly command
   prompt window on screen. The Janel open source launcher can alleviate this.
-  See {{{http://www.redskaper.com}the Janel home page}} for details of Janel.
+  The original {{{http://www.redskaper.com}Janel home page}} has been discontinued
+  by its author, Timothy Kil, but it has been continued and enhanced by
+  Michael Knigge. See {{https://github.com/michaelknigge/janel} Janel Github project}
+  for details of Janel.
   This plugin contains the Janel console and windows .EXE files, and will copy
-  the relevant one into your launcher structure.
+  the relevant one into your launcher structure. For the enhanced Janel, a 32- and 64-bit
+  version is provided.
 
 ** Linux  
   
@@ -134,4 +138,7 @@ Cross Platform Launcher Plugin
       more details.
 
     * The Redskaper Janel launcher is provided by this plugin. Please see {{{http://www.redskaper.com/}their project page}}
+      for more details.
+
+    * Michael Knigge's enhancements to Janel are available at {{https://github.com/michaelknigge/janel} his project page}}
       for more details.
