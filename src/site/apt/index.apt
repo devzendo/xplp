@@ -85,7 +85,7 @@ Cross Platform Launcher Plugin
   prompt window on screen. The Janel open source launcher can alleviate this.
   The original {{{http://www.redskaper.com}Janel home page}} has been discontinued
   by its author, Timothy Kil, but it has been continued and enhanced by
-  Michael Knigge. See {{https://github.com/michaelknigge/janel} Janel Github project}
+  Michael Knigge. See {{{https://github.com/michaelknigge/janel} Janel Github project}}
   for details of Janel.
   This plugin contains the Janel console and windows .EXE files, and will copy
   the relevant one into your launcher structure. For the enhanced Janel, a 32- and 64-bit
