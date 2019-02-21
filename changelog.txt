@@ -35,7 +35,7 @@ v1.1.1 28/09/2017 sixth release
 
   * Corrected typos in documentation.
 
-v1.2.0 15/02/2019 seventh release
+v1.2.0 21/02/2019 seventh release
 
   * Windows: Added the enhanced version of Janel 4.2.0-98 from Michael Knigge https://github.com/michaelknigge/janel
     To provide support for 64-bit modern Java, Java 9, etc. - see the Github page for details.
