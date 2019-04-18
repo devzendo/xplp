@@ -27,7 +27,8 @@ v1.1.0 21/09/2017 fifth release
   * Fix bug: expand the shell's arguments in double quotes, so that if you use quotes to preserve a single argument
     containing spaces, the Java program receives it as a single argument.
   * Built with Java 1.7.
-  * Added the universal application stub v2.1.0 from Tobias Fischer. This allows OSX launchers to run with JVMs
+  * Added the universal application stub v2.1.0 from Tobias Fischer. https://github.com/tofi86/universalJavaApplicationStub
+    This allows OSX launchers to run with JVMs
     more modern than Apple's Java 1.6. The default stub is still Apple's: to switch to the universal stub and run
     with the most modern JVM you have, use the <stubType>Universal</stubType> option in your configuration.
 
