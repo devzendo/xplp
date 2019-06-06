@@ -39,6 +39,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
     private final String[] mJanelCustomLines;
     private final String mJanelVersion;
     private final String mJanelBits;
+    private final String mJanelDirectory;
 
     /**
      * @param mojo the parent mojo class
@@ -56,6 +57,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
      * @param janelVersion the version of Janel, 3.0 or 4.2
      * @param janelBits 32 or 64 bit Janel 4.2
      * @param janelCustomLines an array of extra lines to be added to the launcher file
+     * @param janelDirectory root or bin - where to put the binaries, and do we need to relativise the library directory
      */
     public WindowsLauncherCreator(final AbstractMojo mojo,
             final File outputDirectory,
@@ -71,7 +73,8 @@ public class WindowsLauncherCreator extends LauncherCreator {
             final String launcherType,
             final String janelVersion,
             final String janelBits,
-            final String[] janelCustomLines) {
+            final String[] janelCustomLines,
+            final String janelDirectory) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
             transitiveArtifacts, resourceDirectories,
@@ -81,6 +84,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
         mJanelCustomLines = janelCustomLines;
         mJanelVersion = janelVersion;
         mJanelBits = janelBits;
+        mJanelDirectory = janelDirectory;
     }
     
     private void validate() {
@@ -104,6 +108,11 @@ public class WindowsLauncherCreator extends LauncherCreator {
         } else {
             throw new IllegalStateException("Janel bits must be 32 or 64");
         }
+        if (mJanelDirectory.equals("root") || mJanelDirectory.equals("bin")) {
+            getMojo().getLog().info("Janel bin/dll/lap directory: " + mJanelDirectory);
+        } else {
+            throw new IllegalStateException("Janel directory must be root or bin");
+        }
     }
 
     /**
@@ -117,23 +126,32 @@ public class WindowsLauncherCreator extends LauncherCreator {
         getParameterProperties().put("xplp.janelcustomlines", stringsToSeparatedJanelLines(mJanelCustomLines));
 
         getMojo().getLog().info("Janel .EXE type:   " + mLauncherType);
-        
+
+        final boolean usingBinForBinaries = mJanelDirectory.equals("bin"); // could be 'root' instead
+        if (usingBinForBinaries) {
+            // Relativise the xplp.librarydirectory to the bin directory
+            getParameterProperties().put("xplp.librarydirectory", "..\\" + getLibraryDirectory());
+        }
+        // .. else just use the xplp.librarydirectory as-is, it's relative to the root
+
         final File osOutputDir = new File(getOutputDirectory(), "windows");
         final File libDir = new File(osOutputDir, "lib");
+        final File binDir = usingBinForBinaries ? new File(osOutputDir, "bin") : osOutputDir;
         osOutputDir.mkdirs();
         libDir.mkdirs();
-        final boolean allDirsOK = osOutputDir.exists() && libDir.exists();
+        binDir.mkdirs(); // Will return false if !usingBinForBinaries, since it == osOutputDir which already exists. This is fine.
+        final boolean allDirsOK = osOutputDir.exists() && libDir.exists() && binDir.exists();
         if (!allDirsOK) {
             throw new IOException("Could not create required directories under " + getOutputDirectory().getAbsolutePath());
         }
         
-        final File outputJanelEXE = new File(osOutputDir, getApplicationName() + ".exe");
+        final File outputJanelEXE = new File(binDir, getApplicationName() + ".exe");
         final String janelEXEResource = "windows/" + janelExecutableName();
         copyPluginResource(janelEXEResource, outputJanelEXE);
         // TODO icon munging in the launcher .EXE
-        copyPluginResource("windows/" + MSVCR71_DLL, new File(osOutputDir, MSVCR71_DLL));
+        copyPluginResource("windows/" + MSVCR71_DLL, new File(binDir, MSVCR71_DLL));
         
-        copyInterpolatedPluginResource("windows/launcher.lap", new File(osOutputDir, getApplicationName() + ".lap"));
+        copyInterpolatedPluginResource("windows/launcher.lap", new File(binDir, getApplicationName() + ".lap"));
 
         copyTransitiveArtifacts(libDir);
     }

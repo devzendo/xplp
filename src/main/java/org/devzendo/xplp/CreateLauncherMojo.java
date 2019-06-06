@@ -263,6 +263,20 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String janelBits;
 
     /**
+     * Windows only: Should the Janel .EXE, .DLL and .LAP file be in the root directory (the backwards-compatible
+     * default), or in a 'bin' directory? This affects the path to the library directory in the .LAP file -
+     * if "root", we can refer to the library directory as "lib", but if the .LAP file is in a "bin" directory, then
+     * the path to the library directory would be "../lib".
+     *
+     * Can be "root" or "bin".
+     * The default is "root" for backwards compatibility.
+     *
+     * @parameter expression="${xplp.janeldirectory}" default-value="root"
+     */
+
+    private String janelDirectory;
+
+    /**
      * {@inheritDoc}
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -310,7 +324,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,
                 resourceDirectories, parameterProperties, systemProperties,
-                vmArguments, narClassifierTypes, launcherType, janelVersion, janelBits, janelCustomLines);
+                vmArguments, narClassifierTypes, launcherType, janelVersion, janelBits, janelCustomLines, janelDirectory);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
