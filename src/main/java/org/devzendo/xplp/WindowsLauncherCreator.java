@@ -129,8 +129,13 @@ public class WindowsLauncherCreator extends LauncherCreator {
 
         final boolean usingBinForBinaries = mJanelDirectory.equals("bin"); // could be 'root' instead
         if (usingBinForBinaries) {
+            // A bit kludgy here, but when the .lap file has ${FOUND_EXE_FOLDER} in it, we DON'T INTERPOLATE IT
+            // or rather, we do.. to itself... then Janel can process it. Ew...
+            // A better 'fix' would be to call doNotInterpolate("FOUND_EXE_FOLDER") on the interpolator, but
+            // we don't have access to it directly here, without a fair amount of refactoring..
+            getParameterProperties().put("FOUND_EXE_FOLDER", "${FOUND_EXE_FOLDER}");
             // Relativise the xplp.librarydirectory to the bin directory
-            getParameterProperties().put("xplp.librarydirectory", "..\\" + getLibraryDirectory());
+            getParameterProperties().put("xplp.librarydirectory", "${FOUND_EXE_FOLDER}\\..\\" + getLibraryDirectory());
         }
         // .. else just use the xplp.librarydirectory as-is, it's relative to the root
 
@@ -150,7 +155,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
         copyPluginResource(janelEXEResource, outputJanelEXE);
         // TODO icon munging in the launcher .EXE
         copyPluginResource("windows/" + MSVCR71_DLL, new File(binDir, MSVCR71_DLL));
-        
+
         copyInterpolatedPluginResource("windows/launcher.lap", new File(binDir, getApplicationName() + ".lap"));
 
         copyTransitiveArtifacts(libDir);

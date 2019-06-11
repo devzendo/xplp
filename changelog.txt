@@ -43,3 +43,9 @@ v1.2.0 21/02/2019 seventh release
     The default version of Janel is still 3.0.2 for backwards compatibility. To switch to the enhanced Janel
     use the <janelVersion>4.2</janelVersion> and optionally <janelBits>64</janelBits> (default) or
     <janelBits>32</janelBits> to switch between 64- and 32-bit variants.
+
+v.1.3.0 11/06/2019 eighth release
+
+  * Upgraded to Java 8 and Maven annotations (instead of Javadoc annotations).
+  * Windows: added the janelDirectory option (can be bin, or root) - where the janel .exe/.lap/.dll files
+    will be stored: in a bin directory, or directly in the root (the backwards-compatible default).

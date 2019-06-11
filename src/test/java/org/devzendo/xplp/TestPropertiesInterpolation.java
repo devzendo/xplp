@@ -37,9 +37,6 @@ public final class TestPropertiesInterpolation {
     private PropertiesInterpolator mInterpolator;
     private String mLibsString;
     
-    /**
-     * 
-     */
     @Before
     public void getPrerequisites() {
         mProps = new Properties();
@@ -56,88 +53,81 @@ public final class TestPropertiesInterpolation {
         mInterpolator = new PropertiesInterpolator(mProps);
     }
     
-    /**
-     * 
-     */
     @Test
     public void nullAndEmptyPassedStraightThrough() {
         Assert.assertNull(mInterpolator.interpolate(null));
         Assert.assertEquals(0, mInterpolator.interpolate("").length());
     }
     
-    /**
-     * 
-     */
     @Test
     public void noInterpolation() {
         Assert.assertEquals("verbatim text", mInterpolator.interpolate("verbatim text"));
     }
     
-    /**
-     * 
-     */
     @Test
     public void replaceOneInstance() {
         Assert.assertEquals("check value test", mInterpolator.interpolate("check ${key} test"));
         Assert.assertEquals("check long value test", mInterpolator.interpolate("check ${long.key.name} test"));
     }
-    
-    /**
-     * 
-     */
+
+    @Test
+    public void replaceAtStart() {
+        Assert.assertEquals("value test", mInterpolator.interpolate("${key} test"));
+    }
+
+    @Test
+    public void replaceAtEnd() {
+        Assert.assertEquals("test value", mInterpolator.interpolate("test ${key}"));
+    }
+
     @Test
     public void replaceMultipleOccurrences() {
         Assert.assertEquals("check value test value investigate", mInterpolator.interpolate("check ${key} test ${key} investigate"));
     }
     
-    /**
-     * 
-     */
     @Test
     public void replaceMultipleOccurrencesMultipleKeys() {
         Assert.assertEquals("check value test long value foo long value",
             mInterpolator.interpolate("check ${key} test ${long.key.name} foo ${long.key.name}"));
     }
 
-    /**
-     * 
-     */
     @Test
     public void replaceMultipleOccurrencesMultipleKeysRightNextToEachOther() {
         Assert.assertEquals("valuelong valuelong value",
             mInterpolator.interpolate("${key}${long.key.name}${long.key.name}"));
     }
 
-    /**
-     * 
-     */
     @Test
     public void replaceMultipleOccurrencesMultipleKeysRightNextToEachOtherIncludingNewlines() {
         Assert.assertEquals("valueline1" + lineSeparator + "line2long value",
             mInterpolator.interpolate("${key}${return}${long.key.name}"));
     }
 
-    /**
-     * 
-     */
     @Test(expected = IllegalStateException.class)
     public void variableNotFound() {
         mInterpolator.interpolate("wahey ${nonexistant} frugal!");
     }
     
-    /**
-     * 
-     */
     @Test
     public void replaceLongString() {
         Assert.assertEquals(mLibsString, mInterpolator.interpolate("${xplp.macosxclasspatharray}"));
     }
 
-    /**
-     * 
-     */
     @Test
     public void dontInterpolateInComments() {
         Assert.assertEquals("# ${env.HOME}", mInterpolator.interpolate("# ${env.HOME}"));
+    }
+
+    @Test
+    public void doNotReplaceNoInterpolatedVariables() {
+        mInterpolator.doNotInterpolate("VERBATIM");
+        Assert.assertEquals("check value test value don't replace ${VERBATIM} investigate", mInterpolator.interpolate("check ${key} test ${key} don't replace ${VERBATIM} investigate"));
+    }
+
+    @Test
+    public void janelSpecialVerbatimVariablesAreNotReplaced() {
+        // it isn't cloned in the constructor, so can modify input props after construction :)
+        mProps.put("FOUND_EXE_FOLDER", "${FOUND_EXE_FOLDER}");
+        Assert.assertEquals("check value test value don't replace ${FOUND_EXE_FOLDER} investigate", mInterpolator.interpolate("check ${key} test ${key} don't replace ${FOUND_EXE_FOLDER} investigate"));
     }
 }

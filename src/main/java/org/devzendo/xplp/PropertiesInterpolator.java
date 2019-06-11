@@ -19,6 +19,7 @@
  */
 package org.devzendo.xplp;
 
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +35,7 @@ public final class PropertiesInterpolator {
     private final Properties mProps;
     private final Matcher variableReferenceMatcher = 
         Pattern.compile("^(.*?)\\$\\{([^}]+?)\\}(.*?)$", Pattern.DOTALL).matcher("");
+    private final HashSet<String>  verbatimVariables = new HashSet<>();
 
     /**
      * Create an interpolator, given a set of properties to
@@ -59,29 +61,49 @@ public final class PropertiesInterpolator {
             return input;
         }
         String s = input;
+        final StringBuilder sb = new StringBuilder();
         while (true) {
-            //System.out.println("Finding variables in '" + s + "'");
             variableReferenceMatcher.reset(s);
+//            System.out.println("Finding variables in '" + s + "'");
             if (variableReferenceMatcher.find()) {
-                //System.out.println("Found variable");
+//                System.out.println("Found variable");
                 final String before = variableReferenceMatcher.group(1);
                 final String variableName = variableReferenceMatcher.group(2);
                 final String after = variableReferenceMatcher.group(3);
-                //System.out.println("Variable '" + variableName + "'");
-                if (mProps.containsKey(variableName)) {
-                    final String variableValue = mProps.getProperty(variableName);
-                    //System.out.println("Replacement is '" + variableValue + "'");
-                    s = before + variableValue + after;
+//                System.out.println("Variable '" + variableName + "'");
+                if (verbatimVariables.contains(variableName)) {
+//                    System.out.println("Verbatim variable '" + variableName + "'");
+                    sb.append(before);
+                    sb.append("${");
+                    sb.append(variableName);
+                    sb.append("}");
                 } else {
-                    //System.out.println("Got no value for variable");
-                    throw new IllegalStateException("The name '" + variableName + "' is not defined");
+                    if (mProps.containsKey(variableName)) {
+                        final String variableValue = mProps.getProperty(variableName);
+//                        System.out.println("Replacement is '" + variableValue + "'");
+                        sb.append(before);
+                        sb.append(variableValue);
+                    } else {
+                        //System.out.println("Got no value for variable");
+                        throw new IllegalStateException("The name '" + variableName + "' is not defined");
+                    }
                 }
+                s = after;
             } else {
-                //System.out.println("No more variables");
+//                System.out.println("No more variables");
+                sb.append(s);
                 break;
             }
         }
-        //System.out.println("Output is '" + s + "'");
-        return s;
+//        System.out.println("Output is '" + sb.toString() + "'");
+        return sb.toString();
+    }
+
+    /**
+     * Mark ${verbatimVariable} as a variable name that should not be interpolated
+     * @param verbatimVariable a variable not to be interpolated; should be passed through as ${verbatimVariable}
+     */
+    public void doNotInterpolate(final String verbatimVariable) {
+        verbatimVariables.add(verbatimVariable);
     }
 }
