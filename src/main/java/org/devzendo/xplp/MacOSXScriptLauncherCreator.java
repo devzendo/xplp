@@ -72,7 +72,7 @@ public class MacOSXScriptLauncherCreator extends UnixScriptLauncherCreator {
      */
     @Override
     public void createLauncher() throws IOException {
-        getMojo().getLog().info("Launcher type:     " + mLauncherType);
+        getMojo().getLog().info("Launcher type:               " + mLauncherType);
         super.createLauncher();
     }
 }

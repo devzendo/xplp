@@ -99,12 +99,12 @@ public class WindowsLauncherCreator extends LauncherCreator {
             throw new IllegalStateException(message);
         }
         if (mJanelVersion.equals("3.0") || mJanelVersion.equals("4.2")) {
-            getMojo().getLog().info("Janel version:" + mJanelVersion);
+            getMojo().getLog().info("Janel version:               " + mJanelVersion);
         } else {
             throw new IllegalStateException("Janel version must be 3.0 or 4.2");
         }
         if (mJanelBits.equals("32") || mJanelBits.equals("64")) {
-            getMojo().getLog().info("Janel bits:" + mJanelBits);
+            getMojo().getLog().info("Janel bits:                  " + mJanelBits);
         } else {
             throw new IllegalStateException("Janel bits must be 32 or 64");
         }
@@ -125,7 +125,7 @@ public class WindowsLauncherCreator extends LauncherCreator {
         getParameterProperties().put("xplp.windowsvmarguments", stringsToSeparatedJanelLines(getVmArguments()));
         getParameterProperties().put("xplp.janelcustomlines", stringsToSeparatedJanelLines(mJanelCustomLines));
 
-        getMojo().getLog().info("Janel .EXE type:   " + mLauncherType);
+        getMojo().getLog().info("Janel .EXE type:             " + mLauncherType);
 
         final boolean usingBinForBinaries = mJanelDirectory.equals("bin"); // could be 'root' instead
         if (usingBinForBinaries) {

@@ -30,6 +30,10 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 
 /**
@@ -38,26 +42,31 @@ import org.apache.maven.project.artifact.InvalidDependencyVersionException;
  * (using a shell script).
  * 
  * @author Matt Gumbley, DevZendo.org
- * @phase generate-resources
- * @goal createlauncher
  *
  */
+@Mojo( name = "createlauncher",
+       defaultPhase = LifecyclePhase.GENERATE_RESOURCES )
 public final class CreateLauncherMojo extends AbstractMojo {
 
     /**
      * The Maven project.
-     * @parameter expression="${project}"
-     */ 
-    private org.apache.maven.project.MavenProject mavenProject; 
-    /** @component */ 
-    private org.apache.maven.artifact.factory.ArtifactFactory artifactFactory; 
-    /** @component */ 
-    private org.apache.maven.artifact.resolver.ArtifactResolver artifactResolver; 
-    /** @parameter expression="${localRepository}"  */ 
-    private org.apache.maven.artifact.repository.ArtifactRepository localRepository; 
-    /** @parameter expression="${project.remoteArtifactRepositories}"  */ 
-    private java.util.List<?> remoteRepositories; 
-    /** @component */ 
+     */
+    @Parameter( defaultValue = "${project}", readonly = true)
+    private org.apache.maven.project.MavenProject mavenProject;
+
+    @Component()
+    private org.apache.maven.artifact.factory.ArtifactFactory artifactFactory;
+
+    @Component()
+    private org.apache.maven.artifact.resolver.ArtifactResolver artifactResolver;
+
+    @Parameter( defaultValue = "${localRepository}", readonly = true)
+    private org.apache.maven.artifact.repository.ArtifactRepository localRepository;
+
+    @Parameter( defaultValue = "${project.remoteArtifactRepositories}", readonly = true)
+    private java.util.List<?> remoteRepositories;
+
+    @Component()
     private ArtifactMetadataSource artifactMetadataSource;
 
     
@@ -65,9 +74,9 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * The OS to generate a launcher for: Windows, MacOSX or Linux.
      * 
      * @required
-     * @parameter expression="${xplp.os}"
-     * 
+     *
      */
+    @Parameter( defaultValue = "${xplp.os}", required = true )
     private String os;
     
     /**
@@ -76,18 +85,15 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * structure will be created in a subdirectory of this. This subdirectory
      * will be named according to the platform specified in the os parameter,
      * so: windows, linux or macosx.
-     * 
-     * @parameter expression="${project.build.directory}"
      */
+    @Parameter( defaultValue = "${project.build.directory}")
     private File outputDirectory;
     
     /**
      * The fully-qualified name of the main class of your application,
      * i.e. contains a public static void main...
-     * 
-     * @required
-     * @parameter expression="${xplp.mainclassname}"
      */
+    @Parameter( defaultValue = "${xplp.mainclassname}", required = true )
     private String mainClassName;
 
     /**
@@ -97,37 +103,32 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * On Mac OS X, this is used to name the application menu.
      * On Windows, this is used to name the Janel .exe/.lap files.
      * If not specified the client project's artifact id will be used.
-     * 
-     * @required
-     * @parameter expression="${xplp.applicationname}"
      */
+    @Parameter( defaultValue = "${xplp.applicationname}", required = true )
     private String applicationName;
     
     /**
      * The directory where the application's jars are.
      * By default, assume lib/
-     * 
-     * @parameter expression="${xplp.librarydirectory}" default-value="lib"
      */
-    private String libraryDirectory;
+    @Parameter( defaultValue = "${xplp.librarydirectory}")
+    private String libraryDirectory = "lib";
     
     /**
      * A list of system properties, to be passed to the JVM via multiple
      * -Dxxx=yyy parameters. When specifying system properties, omit the -D, and
      * just give them as xxx=yyy. The platform-specific launcher will add in the
      * -D if necessary.
-     *
-     * @parameter expression="${xplp.systemproperty}"
      */
+    @Parameter( defaultValue = "${xplp.systemproperty}")
     private String[] systemProperties;
     
     /**
      * A list of VM arguments, to be passed straight to the JVM, e.g. -Xmx2048.
      * Note that on Mac OS X, your application should set -Xdock:name=MyApplication
      * to have the correct name in the application menu and on the dock.
-     *
-     * @parameter expression="${xplp.systemproperty}"
      */
+    @Parameter( defaultValue = "${xplp.vmargument}")
     private String[] vmArguments;
 
     /**
@@ -142,35 +143,31 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * The params you specify here must be in the form classifier:type, e.g.
      * x86_64-MacOSX-g++:jni and you may specify as many as you like; only those
      * directories that have anything in them will have their contents copied.
-     *
-     * @parameter expression="${xplp.narClassifierTypes}"
      */
+    @Parameter( defaultValue = "${xplp.narClassifierType}")
     private String[] narClassifierTypes;
 
     /**
      * The launcher type, can be "Console" or "GUI". 
      * For Windows, whether to use the Console or GUI Janel EXE.
      * For Mac OS X, whether to create a script or .app structure.
-     * 
-     * @parameter expression="${xplp.launchertype}" default-value="GUI"
      */
-    private String launcherType;
+    @Parameter( defaultValue = "${xplp.launchertype}")
+    private String launcherType = "GUI";
     
     // Mac OS X Specific parameters -------------------------------
     
     /**
      * Mac OS X only: Any file type that is associated with this application.
      * This is registered in the Mac OS X Info.plist as CFBundleTypeExtensions.
-     * 
-     * @parameter expression="${xplp.filetype}"
      */
+    @Parameter( defaultValue = "${xplp.filetype}")
     private String fileType;
     
     /**
      * Mac OS X only: The name of the icons file.
-     * 
-     * @parameter expression="${xplp.iconsfilename}"
      */
+    @Parameter( defaultValue = "${xplp.iconsfilename}")
     private String iconsFileName;
     
     /**
@@ -184,25 +181,22 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * "This is a simple text file that contains the string APPL optionally
      * concatenated with a four letter creator code. If an application does not
      * have a registered creator code, the string APPL???? should be used."
-     * 
-     * @parameter expression="${xplp.bundlesignature}" default-value="????"
      */
-    private String bundleSignature;
+    @Parameter( defaultValue = "${xplp.bundlesignature}")
+    private String bundleSignature = "????";
     
     /**
      * Mac OS X only: The bundle OS type.
      * This is registered in the Mac OS X Info.plist as CFBundleTypeOSTypes.
-     * 
-     * @parameter expression="${xplp.bundleostype}"
      */
+    @Parameter( defaultValue = "${xplp.bundleostype}")
     private String bundleOsType;
     
     /**
      * Mac OS X only: The bundle type name
      * This is registered in the Mac OS X Info.plist as CFBundleTypeName.
-     * 
-     * @parameter expression="${xplp.bundletypename}"
      */
+    @Parameter( defaultValue = "${xplp.bundletypename}")
     private String bundleTypeName;
 
     /**
@@ -212,10 +206,9 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * If you want to launch with something other than Apple Java 6, you need the universal stub.
      *
      * Can be "Apple" or "Universal". Default is "Apple" for backwards compatibility.
-     *
-     * @parameter expression="${xplp.stubtype}" default-value="Apple"
      */
-    private String stubType;
+    @Parameter( defaultValue = "${xplp.stubtype}")
+    private String stubType = "Apple";
 
     // Windows specific parameters
     /**
@@ -223,18 +216,16 @@ public final class CreateLauncherMojo extends AbstractMojo {
      * Can be "Console" or "GUI"
      * 
      * @deprecated Use launcherType instead.
-     * 
-     * @parameter expression="${xplp.janeltype}"
      */
     @Deprecated
+    @Parameter( defaultValue = "${xplp.janeltype}")
     private String janelType;
     
     /**
      * Windows only: A list of lines of text that will be added to the Janel
      * launcher file.
-     *
-     * @parameter expression="${xplp.janelcustomlines}"
      */
+    @Parameter( defaultValue = "${xplp.janelcustomline}")
     private String[] janelCustomLines;
 
     /**
@@ -246,10 +237,9 @@ public final class CreateLauncherMojo extends AbstractMojo {
      *
      * Can be "3.0" (currently 3.0.2) or "4.2" (currently 4.2.0-98).
      * The default is "3.0" for backwards compatibility.
-     *
-     * @parameter expression="${xplp.janelversion}" default-value="3.0"
      */
-    private String janelVersion;
+    @Parameter( defaultValue = "${xplp.janelversion}")
+    private String janelVersion = "3.0";
 
     /**
      * Windows only: If using the Enhanced Janel, are you using 32- or 64-bit? The original Janel makes no such
@@ -257,10 +247,9 @@ public final class CreateLauncherMojo extends AbstractMojo {
      *
      * Can be "32" or "64".
      * The default is "64" as 32-bit systems are becoming rarer.
-     *
-     * @parameter expression="${xplp.janelbits}" default-value="64"
      */
-    private String janelBits;
+    @Parameter( defaultValue = "${xplp.janelbits}")
+    private String janelBits = "64";
 
     /**
      * Windows only: Should the Janel .EXE, .DLL and .LAP file be in the root directory (the backwards-compatible
@@ -270,11 +259,9 @@ public final class CreateLauncherMojo extends AbstractMojo {
      *
      * Can be "root" or "bin".
      * The default is "root" for backwards compatibility.
-     *
-     * @parameter expression="${xplp.janeldirectory}" default-value="root"
      */
-
-    private String janelDirectory;
+    @Parameter( defaultValue = "${xplp.janeldirectory}")
+    private String janelDirectory = "root";
 
     /**
      * {@inheritDoc}
@@ -291,15 +278,15 @@ public final class CreateLauncherMojo extends AbstractMojo {
         final Set<Artifact> transitiveArtifacts = getTransitiveDependencies();
         final Set<File> resourceDirectories = getResourceDirectories();
         final Properties parameterProperties = getParameterProperties();
-        getLog().info("Operating System:  " + os);
-        getLog().info("Output directory:  " + outputDirectory);
-        getLog().info("Main class name:   " + mainClassName);
-        getLog().info("Application name:  " + applicationName);
-        getLog().info("Library directory: " + libraryDirectory);
-        getLog().info("System properties: " + dumpArray(systemProperties));
-        getLog().info("VM Arguments:      " + dumpArray(vmArguments));
-        getLog().info("NAR Classifier:Types: " + dumpArray(narClassifierTypes));
-        
+        getLog().info("Operating System:            " + os);
+        getLog().info("Output directory:            " + outputDirectory);
+        getLog().info("Main class name:             " + mainClassName);
+        getLog().info("Application name:            " + applicationName);
+        getLog().info("Library directory:           " + libraryDirectory);
+        getLog().info("System properties:           " + dumpArray(systemProperties));
+        getLog().info("VM Arguments:                " + dumpArray(vmArguments));
+        getLog().info("NAR Classifier:Types:        " + dumpArray(narClassifierTypes));
+
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
             if (launcherType.equals("GUI")) { 
@@ -319,7 +306,8 @@ public final class CreateLauncherMojo extends AbstractMojo {
                     vmArguments, narClassifierTypes, launcherType);
             }
         } else if (os.equals("Windows")) {
-            getLog().info("Janel custom lines:" + dumpArray(janelCustomLines));
+            getLog().info("Janel custom lines:          " + dumpArray(janelCustomLines));
+
             launcherCreator = new WindowsLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
                 libraryDirectory, transitiveArtifacts,

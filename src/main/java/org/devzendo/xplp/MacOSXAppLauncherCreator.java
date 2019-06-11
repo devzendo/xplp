@@ -129,13 +129,13 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
         getParameterProperties().put("xplp.macosxvmoptionsarray", vmArgumentsAsPlistArray(getVmArguments()));
         getParameterProperties().put("xplp.macosxclasspatharray", transitiveArtifactsAsPlistArray(getTransitiveArtifacts()));
 
-        getMojo().getLog().info("Launcher type:     " + mLauncherType);
-        getMojo().getLog().info("Icons file name:   " + mIconsFileName);
-        getMojo().getLog().info("File type:         " + mFileType);
-        getMojo().getLog().info("Bundle signature:  " + mBundleSignature);
-        getMojo().getLog().info("Bundle OS type:    " + mBundleOsType);
-        getMojo().getLog().info("Bundle type name:  " + mBundleTypeName);
-        getMojo().getLog().info("Stub type:         " + mStubType);
+        getMojo().getLog().info("Launcher type:               " + mLauncherType);
+        getMojo().getLog().info("Icons file name:             " + mIconsFileName);
+        getMojo().getLog().info("File type:                   " + mFileType);
+        getMojo().getLog().info("Bundle signature:            " + mBundleSignature);
+        getMojo().getLog().info("Bundle OS type:              " + mBundleOsType);
+        getMojo().getLog().info("Bundle type name:            " + mBundleTypeName);
+        getMojo().getLog().info("Stub type:                   " + mStubType);
 
         final File osOutputDir = new File(getOutputDirectory(), "macosx");
         final File appDir = new File(osOutputDir, getApplicationName() + ".app");
