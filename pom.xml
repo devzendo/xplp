@@ -27,9 +27,9 @@
         </license>
     </licenses>
     <scm>
-        <url>https://bitbucket.org/devzendo/xplp</url>
-        <connection>scm:hg:https://bitbucket.org/devzendo/xplp</connection>
-        <developerConnection>scm:hg:https://bitbucket.org/devzendo/xplp</developerConnection>
+        <url>https://github.com/devzendo/xplp.git</url>
+        <connection>scm:git:https://github.com/devzendo/xplp.git</connection>
+        <developerConnection>scm:git:git@github.com:devzendo/xplp.git</developerConnection>
       <tag>HEAD</tag>
     </scm>
     <developers>
