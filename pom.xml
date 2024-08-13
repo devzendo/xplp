@@ -5,7 +5,7 @@
 	<artifactId>cross-platform-launcher-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<name>cross-platform-launcher-plugin</name>
-	<version>1.4.0</version>
+	<version>1.4.1-SNAPSHOT</version>
 	<url>http://devzendo.org/xplp</url>
 	<description>A Maven plugin that creates launchers for Windows
   	(using Janel), Mac OS X (creating a .app structure, or tree with shell
@@ -30,7 +30,7 @@
         <url>https://github.com/devzendo/xplp.git</url>
         <connection>scm:git:https://github.com/devzendo/xplp.git</connection>
         <developerConnection>scm:git:git@github.com:devzendo/xplp.git</developerConnection>
-        <tag>cross-platform-launcher-plugin-1.4.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <developers>
         <developer>
