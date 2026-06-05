@@ -10,7 +10,7 @@
 	<description>A Maven plugin that creates launchers for Windows
   	(using Janel), Mac OS X (creating a .app structure, or tree with shell
     script) or Linux (using a shell script).
-  	(Apache License v2) 2008-2024 Matt Gumbley, DevZendo.org
+  	(Apache License v2) 2008-2026 Matt Gumbley, DevZendo.org
     Note that the Universal Application Stub and Janel have separate licenses
     as described in their included license files.</description>
 
@@ -43,7 +43,7 @@
     <parent>
         <groupId>org.devzendo</groupId>
         <artifactId>group-parent</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.3-SNAPSHOT</version>
     </parent>
 
     <build>
