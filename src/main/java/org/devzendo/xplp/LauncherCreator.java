@@ -55,6 +55,7 @@ public abstract class LauncherCreator {
     private final String mApplicationName;
     private final String mLibraryDirectory;
     private final Set<Artifact> mTransitiveArtifacts;
+    private final Boolean mCopyTransitiveArtifacts;
     private final Set<File> mResourceDirectories;
     private final Properties mParameterProperties;
     private final String[] mSystemProperties;
@@ -62,35 +63,38 @@ public abstract class LauncherCreator {
     private final String[] mNarClassifierTypes;
 
     /**
-     * @param mojo the parent mojo class
-     * @param outputDirectory where to create the .app structure 
-     * @param mainClassName the main class
-     * @param applicationName the name of the application
-     * @param libraryDirectory where the libraries are stored
-     * @param transitiveArtifacts the set of transitive artifact dependencies
-     * @param resourceDirectories the project's resource directories
-     * @param parameterProperties the plugin configuration parameters, as properties
-     * @param systemProperties an array of name=value system properties
-     * @param vmArguments an array of arguments to the VM
-     * @param narClassifierTypes an array of NAR classifier:types
+     * @param mojo                    the parent mojo class
+     * @param outputDirectory         where to create the .app structure
+     * @param mainClassName           the main class
+     * @param applicationName         the name of the application
+     * @param libraryDirectory        where the libraries are stored
+     * @param transitiveArtifacts     the set of transitive artifact dependencies
+     * @param copyTransitiveArtifacts copy transitive artifacts to library dir?
+     * @param resourceDirectories     the project's resource directories
+     * @param parameterProperties     the plugin configuration parameters, as properties
+     * @param systemProperties        an array of name=value system properties
+     * @param vmArguments             an array of arguments to the VM
+     * @param narClassifierTypes      an array of NAR classifier:types
      */
     public LauncherCreator(final AbstractMojo mojo,
-            final File outputDirectory,
-            final String mainClassName,
-            final String applicationName,
-            final String libraryDirectory,
-            final Set<Artifact> transitiveArtifacts,
-            final Set<File> resourceDirectories,
-            final Properties parameterProperties, 
-            final String[] systemProperties, 
-            final String[] vmArguments,
-            final String[] narClassifierTypes) {
+                           final File outputDirectory,
+                           final String mainClassName,
+                           final String applicationName,
+                           final String libraryDirectory,
+                           final Set<Artifact> transitiveArtifacts,
+                           final Boolean copyTransitiveArtifacts,
+                           final Set<File> resourceDirectories,
+                           final Properties parameterProperties,
+                           final String[] systemProperties,
+                           final String[] vmArguments,
+                           final String[] narClassifierTypes) {
                 mMojo = mojo;
                 mOutputDirectory = outputDirectory;
                 mMainClassName = mainClassName;
                 mApplicationName = applicationName;
                 mLibraryDirectory = libraryDirectory;
                 mTransitiveArtifacts = transitiveArtifacts;
+                mCopyTransitiveArtifacts = copyTransitiveArtifacts;
                 mResourceDirectories = resourceDirectories;
                 mParameterProperties = parameterProperties;
                 mSystemProperties = systemProperties;
@@ -339,6 +343,11 @@ public abstract class LauncherCreator {
      * @throws IOException on copy failure
      */
     protected final void copyTransitiveArtifacts(final File destinationDirectory) throws IOException {
+//        if (!mCopyTransitiveArtifacts) {
+//            getMojo().getLog().info("Not copying transitive artifact files as requested");
+//            return;
+//        }
+//
         getMojo().getLog().info("Copying transitive artifacts");
         final Set<Artifact> transitiveArtifacts = getTransitiveArtifacts();
         getMojo().getLog().info("There are " + transitiveArtifacts.size() + " transitive artifacts");

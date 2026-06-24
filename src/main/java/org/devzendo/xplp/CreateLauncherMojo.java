@@ -148,6 +148,15 @@ public final class CreateLauncherMojo extends AbstractMojo {
     private String[] narClassifierTypes;
 
     /**
+     * Whether to copy the transitive artifacts to the library directory. If your
+     * main jar is shaded, you may not want to do this. Default is true, the
+     * behaviour before introducing this flag. If you set this false, only the
+     * project's direct compile-scope dependencies will be copied.
+     */
+    @Parameter( defaultValue = "${xplp.copyTransitiveArtifacts}")
+    private Boolean copyTransitiveArtifacts = Boolean.TRUE;
+
+    /**
      * The launcher type, can be "Console" or "GUI". 
      * For Windows, whether to use the Console or GUI Janel EXE.
      * For Mac OS X, whether to create a script or .app structure.
@@ -286,13 +295,14 @@ public final class CreateLauncherMojo extends AbstractMojo {
         getLog().info("System properties:           " + dumpArray(systemProperties));
         getLog().info("VM Arguments:                " + dumpArray(vmArguments));
         getLog().info("NAR Classifier:Types:        " + dumpArray(narClassifierTypes));
+        getLog().info("Copy transitive artifacts:   " + copyTransitiveArtifacts);
 
         LauncherCreator launcherCreator;
         if (os.equals("MacOSX")) {
             if (launcherType.equals("GUI")) { 
                 launcherCreator = new MacOSXAppLauncherCreator(this,
                     outputDirectory, mainClassName, applicationName,
-                    libraryDirectory, transitiveArtifacts,
+                    libraryDirectory, transitiveArtifacts, copyTransitiveArtifacts,
                     resourceDirectories,
                     parameterProperties, systemProperties, vmArguments,
                     narClassifierTypes, launcherType,
@@ -301,7 +311,7 @@ public final class CreateLauncherMojo extends AbstractMojo {
             } else {
                 launcherCreator = new MacOSXScriptLauncherCreator(this,
                     outputDirectory, mainClassName, applicationName,
-                    libraryDirectory, transitiveArtifacts,
+                    libraryDirectory, transitiveArtifacts, copyTransitiveArtifacts,
                     resourceDirectories, parameterProperties, systemProperties,
                     vmArguments, narClassifierTypes, launcherType);
             }
@@ -310,13 +320,13 @@ public final class CreateLauncherMojo extends AbstractMojo {
 
             launcherCreator = new WindowsLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
-                libraryDirectory, transitiveArtifacts,
+                libraryDirectory, transitiveArtifacts, copyTransitiveArtifacts,
                 resourceDirectories, parameterProperties, systemProperties,
                 vmArguments, narClassifierTypes, launcherType, janelVersion, janelBits, janelCustomLines, janelDirectory);
         } else if (os.equals("Linux")) {
             launcherCreator = new LinuxLauncherCreator(this,
                 outputDirectory, mainClassName, applicationName,
-                libraryDirectory, transitiveArtifacts,
+                libraryDirectory, transitiveArtifacts, copyTransitiveArtifacts,
                 resourceDirectories, parameterProperties, systemProperties,
                 vmArguments, narClassifierTypes);
         } else {
@@ -405,6 +415,10 @@ public final class CreateLauncherMojo extends AbstractMojo {
 
     @SuppressWarnings("unchecked")
     private Set<Artifact> getTransitiveDependencies() throws MojoFailureException {
+        if (!copyTransitiveArtifacts) {
+            getLog().info("Only resolving direct dependencies - not transitive artifacts (as requested)");
+            return mavenProject.getDependencyArtifacts();
+        }
         getLog().info("Resolving transitive dependencies");
         Set<?> artifacts;
         try {

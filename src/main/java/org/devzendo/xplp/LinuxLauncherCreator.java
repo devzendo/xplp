@@ -33,32 +33,34 @@ import org.apache.maven.plugin.AbstractMojo;
  */
 public class LinuxLauncherCreator extends UnixScriptLauncherCreator {
     /**
-     * @param mojo the parent mojo class
-     * @param outputDirectory where to create the .app structure 
-     * @param mainClassName the main class
-     * @param applicationName the name of the application
-     * @param libraryDirectory where the libraries are stored
-     * @param transitiveArtifacts the set of transitive artifact dependencies
-     * @param resourceDirectories the project's resource directories
-     * @param parameterProperties the plugin configuration parameters, as properties
-     * @param systemProperties an array of name=value system properties
-     * @param vmArguments an array of arguments to the VM
-     * @param narClassifierTypes an array of NAR classifier:types
+     * @param mojo                    the parent mojo class
+     * @param outputDirectory         where to create the .app structure
+     * @param mainClassName           the main class
+     * @param applicationName         the name of the application
+     * @param libraryDirectory        where the libraries are stored
+     * @param transitiveArtifacts     the set of transitive artifact dependencies
+     * @param copyTransitiveArtifacts copy transitive artifacts to library directory?
+     * @param resourceDirectories     the project's resource directories
+     * @param parameterProperties     the plugin configuration parameters, as properties
+     * @param systemProperties        an array of name=value system properties
+     * @param vmArguments             an array of arguments to the VM
+     * @param narClassifierTypes      an array of NAR classifier:types
      */
     public LinuxLauncherCreator(final AbstractMojo mojo,
-            final File outputDirectory,
-            final String mainClassName,
-            final String applicationName,
-            final String libraryDirectory,
-            final Set<Artifact> transitiveArtifacts,
-            final Set<File> resourceDirectories,
-            final Properties parameterProperties, 
-            final String[] systemProperties, 
-            final String[] vmArguments,
-            final String[] narClassifierTypes) {
+                                final File outputDirectory,
+                                final String mainClassName,
+                                final String applicationName,
+                                final String libraryDirectory,
+                                final Set<Artifact> transitiveArtifacts,
+                                final Boolean copyTransitiveArtifacts,
+                                final Set<File> resourceDirectories,
+                                final Properties parameterProperties,
+                                final String[] systemProperties,
+                                final String[] vmArguments,
+                                final String[] narClassifierTypes) {
         super(mojo, outputDirectory, "linux", mainClassName,
             applicationName, libraryDirectory,
-            transitiveArtifacts, resourceDirectories, parameterProperties,
+            transitiveArtifacts, copyTransitiveArtifacts, resourceDirectories, parameterProperties,
             systemProperties, vmArguments, narClassifierTypes);
     }
 }

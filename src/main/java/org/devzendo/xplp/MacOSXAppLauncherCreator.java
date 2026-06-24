@@ -50,46 +50,48 @@ public final class MacOSXAppLauncherCreator extends LauncherCreator {
     private final String mStubType;
 
     /**
-     * @param mojo the parent mojo class
-     * @param outputDirectory where to create the .app structure 
-     * @param mainClassName the main class
-     * @param applicationName the name of the application
-     * @param libraryDirectory where the libraries are stored
-     * @param transitiveArtifacts the set of transitive artifact dependencies
-     * @param resourceDirectories the project's resource directories
-     * @param parameterProperties the plugin configuration parameters, as properties
-     * @param systemProperties an array of name=value system properties
-     * @param vmArguments an array of arguments to the VM
-     * @param narClassifierTypes an array of NAR classifier:types
-     * @param launcherType the launcher type, Console or GUI
-     * @param fileType the file type (currently unused)
-     * @param iconsFileName the name of the icons file
-     * @param bundleSignature the bundle signature
-     * @param bundleOsType the bundle OS type
-     * @param bundleTypeName the bundle type name
-     * @param stubType the stub type, Apple or Universal
+     * @param mojo                    the parent mojo class
+     * @param outputDirectory         where to create the .app structure
+     * @param mainClassName           the main class
+     * @param applicationName         the name of the application
+     * @param libraryDirectory        where the libraries are stored
+     * @param transitiveArtifacts     the set of transitive artifact dependencies
+     * @param copyTransitiveArtifacts copy transitive artifacts to library dir?
+     * @param resourceDirectories     the project's resource directories
+     * @param parameterProperties     the plugin configuration parameters, as properties
+     * @param systemProperties        an array of name=value system properties
+     * @param vmArguments             an array of arguments to the VM
+     * @param narClassifierTypes      an array of NAR classifier:types
+     * @param launcherType            the launcher type, Console or GUI
+     * @param fileType                the file type (currently unused)
+     * @param iconsFileName           the name of the icons file
+     * @param bundleSignature         the bundle signature
+     * @param bundleOsType            the bundle OS type
+     * @param bundleTypeName          the bundle type name
+     * @param stubType                the stub type, Apple or Universal
      */
     public MacOSXAppLauncherCreator(final AbstractMojo mojo,
-            final File outputDirectory,
-            final String mainClassName,
-            final String applicationName,
-            final String libraryDirectory,
-            final Set<Artifact> transitiveArtifacts,
-            final Set<File> resourceDirectories,
-            final Properties parameterProperties,
-            final String[] systemProperties,
-            final String[] vmArguments,
-            final String[] narClassifierTypes,
-            final String launcherType,
-            final String fileType,
-            final String iconsFileName,
-            final String bundleSignature,
-            final String bundleOsType,
-            final String bundleTypeName,
-            final String stubType) {
+                                    final File outputDirectory,
+                                    final String mainClassName,
+                                    final String applicationName,
+                                    final String libraryDirectory,
+                                    final Set<Artifact> transitiveArtifacts,
+                                    final Boolean copyTransitiveArtifacts,
+                                    final Set<File> resourceDirectories,
+                                    final Properties parameterProperties,
+                                    final String[] systemProperties,
+                                    final String[] vmArguments,
+                                    final String[] narClassifierTypes,
+                                    final String launcherType,
+                                    final String fileType,
+                                    final String iconsFileName,
+                                    final String bundleSignature,
+                                    final String bundleOsType,
+                                    final String bundleTypeName,
+                                    final String stubType) {
         super(mojo, outputDirectory, mainClassName,
             applicationName, libraryDirectory,
-            transitiveArtifacts, resourceDirectories,
+            transitiveArtifacts, copyTransitiveArtifacts, resourceDirectories,
             parameterProperties, systemProperties, vmArguments,
             narClassifierTypes);
         mFileType = fileType;
